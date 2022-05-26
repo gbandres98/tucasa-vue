@@ -943,6 +943,21 @@
     "@babel/helper-validator-identifier" "^7.16.7"
     to-fast-properties "^2.0.0"
 
+"@babylonjs/core@^5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/core/-/core-5.6.1.tgz#11cfe77ab654b254d405648172aef92eb2c0f71b"
+  integrity sha512-kWXMK+C8IAlhpOIS+WEpA1FHuizrK+nKHCHxc0bnrSQ7ePCIL2Xfxjx+ZE5C2WGB4og135O6+E3msdtp9cETFA==
+  dependencies:
+    tslib "^2.3.1"
+
+"@babylonjs/gui@^5.6.1":
+  version "5.6.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-5.6.1.tgz#ec23eacbc1b47f6c642945eac5ef61b043c2c8ec"
+  integrity sha512-+y9vueh2eFLPG+6wkO/0H8E7Rtz9mkvD9HDKjZZNUmFxE9pLsfjt4HP5uAY3zY8D/hKGQYHaWFWS3kjPjuQkjw==
+  dependencies:
+    "@babylonjs/core" "^5.6.1"
+    tslib "^2.3.1"
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.npmmirror.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"
@@ -5857,7 +5872,7 @@ tslib@^1.8.1:
   resolved "https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3:
+tslib@^2.0.3, tslib@^2.3.1:
   version "2.4.0"
   resolved "https://registry.npmmirror.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
