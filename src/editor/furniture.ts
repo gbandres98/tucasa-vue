@@ -20,9 +20,9 @@ import {
   wallHash,
 } from "@/editor/indoorEditor";
 import { scene } from "@/editor/editor";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 
-type Model = {
+export type Model = {
   name: string;
   file: string;
   preview: string;
@@ -36,12 +36,13 @@ type Model = {
 const furnitures: Map<string, AbstractMesh> = new Map<string, AbstractMesh>();
 let activeCallBack: (pointerInfo: PointerInfo) => void;
 
-export const getWallFurniture = async () => {
-  const snap = await getDocs(collection(firestore, "models"));
+export const getModels = async (type: string) => {
+  const modelsCollection = collection(firestore, "models");
+  const q = query(modelsCollection, where("type", "==", "door"));
 
-  return snap.docs
-    .map((doc) => doc.data() as Model)
-    .filter((model) => model.wall && !model.window);
+  const snap = await getDocs(q);
+
+  return snap.docs.map((doc) => doc.data() as Model);
 };
 
 export const startFurniturePlacement = async (model: Model) => {

@@ -4,14 +4,14 @@ import { firestore, storage } from "@/firebase/firebase";
 import { ref, getDownloadURL } from "firebase/storage";
 import { activeFloor, getClosestWallToPointer, wallHash, } from "@/editor/indoorEditor";
 import { scene } from "@/editor/editor";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 const furnitures = new Map();
 let activeCallBack;
-export const getWallFurniture = async () => {
-    const snap = await getDocs(collection(firestore, "models"));
-    return snap.docs
-        .map((doc) => doc.data())
-        .filter((model) => model.wall && !model.window);
+export const getModels = async (type) => {
+    const modelsCollection = collection(firestore, "models");
+    const q = query(modelsCollection, where("type", "==", "door"));
+    const snap = await getDocs(q);
+    return snap.docs.map((doc) => doc.data());
 };
 export const startFurniturePlacement = async (model) => {
     // const model = {
