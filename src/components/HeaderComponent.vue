@@ -7,7 +7,7 @@
       </div>
     </RouterLink>
     <div class="links">
-      <RouterLink class="animated-link" to="/">Sobre nosotros</RouterLink>
+      <RouterLink class="animated-link" to="/casas">Sobre nosotros</RouterLink>
       <RouterLink class="animated-link" to="/editor">Casos de éxito</RouterLink>
     </div>
     <UserBarComponent class="user-bar" />

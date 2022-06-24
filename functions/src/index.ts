@@ -11,7 +11,7 @@ export const addRoleOnSignup = functions
     if (!user.email) return;
 
     const customClaims = {
-      role: "USER",
+      role: "ADMIN",
     };
 
     try {
