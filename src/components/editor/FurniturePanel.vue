@@ -1,5 +1,13 @@
 <template>
-  <div class="furniture-panel">asdasd</div>
+  <div class="furniture-panel">
+    <div
+      class="furniture"
+      v-for="furniture in furnitures"
+      :key="furniture.name"
+    >
+      {{ furniture.name }}
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
