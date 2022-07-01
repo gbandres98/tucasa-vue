@@ -11,7 +11,7 @@ export const addRoleOnSignup = functions
     if (!user.email) return;
 
     const customClaims = {
-      role: "ADMIN",
+      role: "STAFF",
     };
 
     try {
@@ -20,3 +20,9 @@ export const addRoleOnSignup = functions
       console.log(e);
     }
   });
+
+export const getStaffList = functions
+  .region("europe-west3")
+  .https.onCall(async (data, context) => {
+      if (context.auth?.token)
+    });

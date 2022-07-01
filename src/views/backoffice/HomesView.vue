@@ -7,6 +7,7 @@
         v-model="column.homes"
         group="cards"
         itemKey="id"
+        ghost-class="ghost"
       >
         <template #item="{ element }">
           <div class="card">
@@ -103,12 +104,18 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 100%;
 }
 
 .card {
+  cursor: grab;
   background-color: white;
   border-radius: 1px;
   padding: 10px;
+}
+
+.card.ghost {
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .card-title {
