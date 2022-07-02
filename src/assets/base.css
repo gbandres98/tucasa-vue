@@ -51,7 +51,7 @@ a:visited {
     gap: 20px;
 }
 
-input {
+input,select {
     box-sizing: border-box;
     padding: 6px 8px;
     height: 36px;

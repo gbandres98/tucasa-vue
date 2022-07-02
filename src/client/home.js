@@ -1,4 +1,4 @@
-import moment from "moment";
+import { DateTime } from "luxon";
 export const getHomes = async () => [
     {
         id: 0,
@@ -7,7 +7,7 @@ export const getHomes = async () => [
         },
         assigned: undefined,
         status: "NEW",
-        lastModified: moment().subtract(3, "days"),
+        lastModified: DateTime.now().minus({ week: 3 }),
     },
     {
         id: 1,
@@ -16,7 +16,7 @@ export const getHomes = async () => [
         },
         assigned: undefined,
         status: "NEW",
-        lastModified: moment().subtract(3, "days"),
+        lastModified: DateTime.now().minus({ week: 3 }),
     },
     {
         id: 2,
@@ -27,7 +27,7 @@ export const getHomes = async () => [
             email: "staff@gbandres.com",
         },
         status: "ASSIGNED",
-        lastModified: moment().subtract(3, "days"),
+        lastModified: DateTime.now().minus({ week: 3 }),
     },
     {
         id: 3,
@@ -38,7 +38,7 @@ export const getHomes = async () => [
             email: "staff.gbandres.com",
         },
         status: "IN_PROGRESS",
-        lastModified: moment().subtract(3, "days"),
+        lastModified: DateTime.now().minus({ week: 3 }),
     },
     {
         id: 4,
@@ -49,7 +49,7 @@ export const getHomes = async () => [
             email: "staff.gbandres.com",
         },
         status: "WAITING",
-        lastModified: moment().subtract(3, "days"),
+        lastModified: DateTime.now().minus({ week: 3 }),
     },
 ];
 //# sourceMappingURL=home.js.map

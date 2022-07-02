@@ -13,7 +13,7 @@
           <div class="card">
             <div class="card-title">{{ `Casa ${element.id}` }}</div>
             <div class="card-modified">
-              {{ element.lastModified.fromNow() }}
+              {{ element.lastModified.toRelative({ locale: "ES" }) }}
             </div>
           </div>
         </template>
@@ -24,8 +24,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import type { Home, HomeStatus } from "@/editor/home";
-import { getHomes } from "@/editor/home";
+import type { Home, HomeStatus } from "@/client/home";
+import { getHomes } from "@/client/home";
 import Draggable from "vuedraggable";
 
 type Column = {

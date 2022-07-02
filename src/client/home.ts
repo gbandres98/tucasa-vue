@@ -1,6 +1,5 @@
-import type { User } from "firebase/auth";
-import type { Moment } from "moment";
-import moment from "moment";
+import { DateTime } from "luxon";
+import type { Home } from "@/model/model";
 
 export type HomeStatus =
   | "NEW"
@@ -8,14 +7,6 @@ export type HomeStatus =
   | "IN_PROGRESS"
   | "WAITING"
   | "FINISHED";
-
-export type Home = {
-  id: number;
-  client: any;
-  assigned: any | undefined;
-  status: HomeStatus;
-  lastModified: Moment;
-};
 
 export const getHomes = async (): Promise<Array<Home>> => [
   {
@@ -25,7 +16,7 @@ export const getHomes = async (): Promise<Array<Home>> => [
     },
     assigned: undefined,
     status: "NEW",
-    lastModified: moment().subtract(3, "days"),
+    lastModified: DateTime.now().minus({ week: 3 }),
   },
   {
     id: 1,
@@ -34,7 +25,7 @@ export const getHomes = async (): Promise<Array<Home>> => [
     },
     assigned: undefined,
     status: "NEW",
-    lastModified: moment().subtract(3, "days"),
+    lastModified: DateTime.now().minus({ week: 3 }),
   },
   {
     id: 2,
@@ -45,7 +36,7 @@ export const getHomes = async (): Promise<Array<Home>> => [
       email: "staff@gbandres.com",
     },
     status: "ASSIGNED",
-    lastModified: moment().subtract(3, "days"),
+    lastModified: DateTime.now().minus({ week: 3 }),
   },
   {
     id: 3,
@@ -56,7 +47,7 @@ export const getHomes = async (): Promise<Array<Home>> => [
       email: "staff.gbandres.com",
     },
     status: "IN_PROGRESS",
-    lastModified: moment().subtract(3, "days"),
+    lastModified: DateTime.now().minus({ week: 3 }),
   },
   {
     id: 4,
@@ -67,6 +58,6 @@ export const getHomes = async (): Promise<Array<Home>> => [
       email: "staff.gbandres.com",
     },
     status: "WAITING",
-    lastModified: moment().subtract(3, "days"),
+    lastModified: DateTime.now().minus({ week: 3 }),
   },
 ];

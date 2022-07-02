@@ -35,6 +35,7 @@ const { containers } = storeToRefs(useEditorStore());
 
 const firstFloorContainerPrice = computed(() => {
   return containers.value.filter(
+    // @ts-ignore
     (container: Container) => container.floor === 0
   );
 });

@@ -14,7 +14,7 @@ export type EditorState = {
 export const useEditorStore = defineStore({
   id: "editor",
   state: (): EditorState => ({
-    step: 2,
+    step: 1,
     activeFloor: 0,
     isAddContainerActive: false,
     isRemoveContainerActive: false,

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import "vue-select/dist/vue-select.css";
 import { RouterView } from "vue-router";
 import HeaderComponent from "@/components/HeaderComponent.vue";
 </script>

@@ -1,9 +1,10 @@
 <template>
   <div class="editor-wrapper">
     <StepComponent />
-    <ToolBarComponent />
-    <EditorComponent />
-    <PriceComponent />
+    <TerrainPicker v-if="step === 1" />
+    <ToolBarComponent v-if="step === 2 || step === 3" />
+    <EditorComponent v-if="step === 2 || step === 3" />
+    <PriceComponent v-if="step === 2 || step === 3" />
   </div>
 </template>
 
@@ -12,6 +13,11 @@ import StepComponent from "@/components/editor/StepComponent.vue";
 import ToolBarComponent from "@/components/editor/ToolBarComponent.vue";
 import EditorComponent from "@/components/editor/EditorComponent.vue";
 import PriceComponent from "@/components/editor/PriceComponent.vue";
+import { storeToRefs } from "pinia";
+import { useEditorStore } from "@/stores/editor.store";
+import TerrainPicker from "@/components/editor/TerrainPicker.vue";
+
+const { step } = storeToRefs(useEditorStore());
 </script>
 
 <style scoped>
