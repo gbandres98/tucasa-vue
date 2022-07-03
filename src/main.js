@@ -7,6 +7,8 @@ import router from "./router";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import vSelect from "vue-select";
 library.add(faX, faCube, faTrashCan, faAngleUp, faAngleDown, faDoorClosed, faCouch);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const app = createApp(App);
 app.use(createPinia());
 app.use(router);

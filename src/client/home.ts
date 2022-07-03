@@ -1,13 +1,6 @@
 import { DateTime } from "luxon";
 import type { Home } from "@/model/model";
 
-export type HomeStatus =
-  | "NEW"
-  | "ASSIGNED"
-  | "IN_PROGRESS"
-  | "WAITING"
-  | "FINISHED";
-
 export const getHomes = async (): Promise<Array<Home>> => [
   {
     id: 0,

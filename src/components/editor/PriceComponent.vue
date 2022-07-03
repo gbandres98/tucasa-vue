@@ -31,6 +31,7 @@ import { useEditorStore } from "@/stores/editor.store";
 import type { Container } from "@/editor/container";
 
 const open = ref(false);
+const price = ref(0);
 const { containers } = storeToRefs(useEditorStore());
 
 const firstFloorContainerPrice = computed(() => {

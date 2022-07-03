@@ -7,7 +7,7 @@
   "resolved" "https://registry.npmjs.org/@babel/parser/-/parser-7.18.4.tgz"
   "version" "7.18.4"
 
-"@babylonjs/core@^5.10.0":
+"@babylonjs/core@^5.0.0", "@babylonjs/core@^5.10.0":
   "integrity" "sha512-xAfEYbYykHRwV633Q0rpbA+v/GpeBm7cVC2/YgwzcySJ5JYB/oAfx/MEKJX4PXIQctZ7SjipcE5HdnMh0H1F2g=="
   "resolved" "https://registry.npmjs.org/@babylonjs/core/-/core-5.10.0.tgz"
   "version" "5.10.0"
@@ -15,14 +15,11 @@
     "tslib" "^2.3.1"
 
 "@babylonjs/gui-editor@^5.10.0":
-  "integrity" "sha512-IjzHAPzksDcqPitRrpjSY0pVsgiAYxWK9F2VUcDpuNgLIJx8jAKKVfTXDa6Bs9eSwNnaT96PIAXk6fR+g7IQfA=="
-  "resolved" "https://registry.npmjs.org/@babylonjs/gui-editor/-/gui-editor-5.10.0.tgz"
-  "version" "5.10.0"
-  dependencies:
-    "@babylonjs/core" "^5.10.0"
-    "@babylonjs/gui" "^5.10.0"
+  "integrity" "sha512-dxKuRiY3Z3Zjwe385Vr1LNrUXvS8hFnXkuo3bdOX9Kffd2YnRiqK1/M7slsIgDGolWWncWo+zwLgvH3fKBM+WQ=="
+  "resolved" "https://registry.npmjs.org/@babylonjs/gui-editor/-/gui-editor-5.13.3.tgz"
+  "version" "5.13.3"
 
-"@babylonjs/gui@^5.10.0":
+"@babylonjs/gui@^5.0.0", "@babylonjs/gui@^5.10.0":
   "integrity" "sha512-8vR3g7ODtnc3LQdZdMEetZ6Ao6pfUM9OhxKxAVCIsoyj0QDc1sqk0l13bjVATYkBxWd7k4toiSqY56Pqrxo6Vw=="
   "resolved" "https://registry.npmjs.org/@babylonjs/gui/-/gui-5.10.0.tgz"
   "version" "5.10.0"
@@ -616,11 +613,6 @@
   "resolved" "https://registry.npmjs.org/@types/node/-/node-16.11.39.tgz"
   "version" "16.11.39"
 
-"@types/prop-types@*":
-  "integrity" "sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w=="
-  "resolved" "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.5.tgz"
-  "version" "15.7.5"
-
 "@types/react-dom@>=16.0.9":
   "integrity" "sha512-OWPWTUrY/NIrjsAPkAk1wW9LZeIjSvkXRhclsFO8CZcZGCOg2G0YZy4ft+rOyYxy8B7ui5iZzi9OkDebZ7/QSA=="
   "resolved" "https://registry.npmjs.org/@types/react-dom/-/react-dom-18.0.5.tgz"
@@ -628,19 +620,9 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@>=16.7.3":
-  "integrity" "sha512-duF1OTASSBQtcigUvhuiTB1Ya3OvSy+xORCiEf20H0P0lzx+/KeVsA99U5UjLXSbyo1DRJDlLKqTeM1ngosqtg=="
-  "resolved" "https://registry.npmjs.org/@types/react/-/react-18.0.12.tgz"
-  "version" "18.0.12"
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    "csstype" "^3.0.2"
-
-"@types/scheduler@*":
-  "integrity" "sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew=="
-  "resolved" "https://registry.npmjs.org/@types/scheduler/-/scheduler-0.16.2.tgz"
-  "version" "0.16.2"
+"@types/react@*", "@types/react@>=16.7.3", "@types/react@file:stub/types__react":
+  "resolved" "file:stub/types__react"
+  "version" "18.0.0"
 
 "@types/vue-select@^3.16.0":
   "integrity" "sha512-eUNzHK8tY7fT6fWR3mcN3kq9BznRrFPFvmpBZ66DAz4k9aD27AwT54gvR58O9P+ql7/iC0yVvl5lUTjKZ7K1tA=="
@@ -1087,11 +1069,6 @@
   "integrity" "sha512-/WwNkdXfckNgw6S5R125rrW8ez139lBHWouiBvX8dfMFtcn6V81REDqnH7+CRpRipfYlyU1CmOnOxrmGcFOjeA=="
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-2.6.20.tgz"
   "version" "2.6.20"
-
-"csstype@^3.0.2":
-  "integrity" "sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA=="
-  "resolved" "https://registry.npmjs.org/csstype/-/csstype-3.1.0.tgz"
-  "version" "3.1.0"
 
 "csstype@^3.1.0":
   "integrity" "sha512-uX1KG+x9h5hIJsaKR9xHUeUraxf8IODOwq9JLNPq6BwB04a/xgpq3rcx47l5BZu5zBPlgD342tdke3Hom/nJRA=="

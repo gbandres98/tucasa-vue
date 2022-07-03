@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import type { Home, HomeStatus } from "@/client/home";
+import type { Home, HomeStatus } from "@/model/model";
 import { getHomes } from "@/client/home";
 import Draggable from "vuedraggable";
 

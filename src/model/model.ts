@@ -1,5 +1,4 @@
 import type { DateTime } from "luxon";
-import type { HomeStatus } from "@/client/home";
 
 export type Province = {
   code: string;
@@ -22,6 +21,12 @@ export type Terrain = {
   custom: boolean;
   imgUrl: string | undefined;
 };
+export type HomeStatus =
+  | "NEW"
+  | "ASSIGNED"
+  | "IN_PROGRESS"
+  | "WAITING"
+  | "FINISHED";
 
 export type Home = {
   id: number;

@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="terrain-picker">
       <h1>Elige un terreno:</h1>
-      <div class="filler" />
+      <TerrainShowcase />
       <h1>¿Ya tienes un terreno?</h1>
       <span>Danos los detalles de tu terreno y contruiremos tu casa en él</span>
       <form class="form">
@@ -62,6 +62,7 @@ import { onMounted, ref, watchEffect } from "vue";
 import type { Ref } from "vue";
 import { getProvinceList, getCitiesForProvince } from "@/client/geo";
 import type { City, Province } from "@/model/model";
+import TerrainShowcase from "@/components/editor/TerrainShowcase.vue";
 
 const sizeX: Ref<number | undefined> = ref(undefined);
 const sizeY: Ref<number | undefined> = ref(undefined);
