@@ -12,9 +12,12 @@ let canvas;
 export let sizeI, sizeJ;
 export let camera;
 export let scene;
-export const createScene = (editorCanvas, x = 15, z = 15) => {
-    sizeI = x;
-    sizeJ = z;
+export const createScene = (editorCanvas) => {
+    const { terrain } = useEditorStore();
+    if (!terrain || !terrain.sizeX || !terrain.sizeY)
+        return;
+    sizeI = terrain.sizeX / 2.5;
+    sizeJ = terrain.sizeY / 2.5;
     canvas = editorCanvas;
     engine = new Engine(canvas, true, { stencil: true });
     scene = new Scene(engine);

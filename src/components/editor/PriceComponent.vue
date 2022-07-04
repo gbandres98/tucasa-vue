@@ -1,7 +1,7 @@
 <template>
   <div class="price-wrapper">
     <div class="price-summary" @click="open = !open">
-      Precio estimado: <strong>{{ price }}</strong>
+      Precio estimado: <strong>{{ `${price.toLocaleString()}€` }}</strong>
       <font-awesome-icon
         :class="{ 'open-icon': true, open: open }"
         icon="angle-down"
@@ -9,8 +9,8 @@
     </div>
     <div class="price-detail" :class="{ open: open }">
       <div class="price">
-        <span>Contenedores (m2)</span>
-        <span>7.000,00€</span>
+        <span>Parcela</span>
+        <span>{{ `${terrain.price.toLocaleString()}€` }}</span>
       </div>
       <div class="price">
         <span>Contenedores (m2)</span>
@@ -31,8 +31,7 @@ import { useEditorStore } from "@/stores/editor.store";
 import type { Container } from "@/editor/container";
 
 const open = ref(false);
-const price = ref(0);
-const { containers } = storeToRefs(useEditorStore());
+const { containers, terrain, price } = storeToRefs(useEditorStore());
 
 const firstFloorContainerPrice = computed(() => {
   return containers.value.filter(
@@ -40,6 +39,10 @@ const firstFloorContainerPrice = computed(() => {
     (container: Container) => container.floor === 0
   );
 });
+
+const floors = computed(() => [
+  ...new Set(containers.value.map((container) => container.floor)),
+]);
 </script>
 
 <style scoped>

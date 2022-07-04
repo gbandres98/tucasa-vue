@@ -51,6 +51,7 @@ const { open } = toRefs(props);
   background-color: rgb(0, 0, 0, 0.4);
   overflow-x: hidden;
   overflow-y: auto;
+  z-index: 999;
 }
 
 .modal {

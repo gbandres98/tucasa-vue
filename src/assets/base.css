@@ -82,8 +82,34 @@ input:focus {
     font-weight: 700;
     border-radius: 50px;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+.button-primary:disabled {
+    background-color: #d2d2d2;
+    cursor: default;
 }
 
 form .button-primary {
     margin-left: auto;
+}
+
+::-webkit-scrollbar {
+    background: none;
+    width: 10px;
+    height: 10px;
+    cursor: pointer;
+}
+
+::-webkit-scrollbar-track {
+    background: #f8f8f8;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #f0f0f0;
+    transition: 0.1s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #d2d2d2;
 }

@@ -46,13 +46,13 @@ export let sizeI: number, sizeJ: number;
 export let camera: ArcRotateCamera;
 export let scene: Scene;
 
-export const createScene = (
-  editorCanvas: HTMLCanvasElement,
-  x = 15,
-  z = 15
-) => {
-  sizeI = x;
-  sizeJ = z;
+export const createScene = (editorCanvas: HTMLCanvasElement) => {
+  const { terrain } = useEditorStore();
+
+  if (!terrain || !terrain.sizeX || !terrain.sizeY) return;
+
+  sizeI = terrain.sizeX / 2.5;
+  sizeJ = terrain.sizeY / 2.5;
 
   canvas = editorCanvas;
   engine = new Engine(canvas, true, { stencil: true });
