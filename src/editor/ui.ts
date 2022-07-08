@@ -139,7 +139,7 @@ export const createContainerUI = (
 ) => {
   if (onContainerDelete) {
     const deleteButton = Button.CreateSimpleButton(
-      `delete-${container.id}`,
+      `delete-${container.mesh.id}`,
       "d"
     );
     deleteButton.width = "20px";
@@ -148,14 +148,14 @@ export const createContainerUI = (
 
     uiTexture.addControl(deleteButton);
 
-    deleteButton.linkWithMesh(container);
+    deleteButton.linkWithMesh(container.mesh);
 
     container.uiControls.push(deleteButton);
   }
 
   if (onContainerRotate) {
     const rotateButton = Button.CreateSimpleButton(
-      `rotate-${container.id}`,
+      `rotate-${container.mesh.id}`,
       "r"
     );
     rotateButton.width = "20px";
@@ -164,21 +164,21 @@ export const createContainerUI = (
 
     uiTexture.addControl(rotateButton);
 
-    rotateButton.linkWithMesh(container);
+    rotateButton.linkWithMesh(container.mesh);
     rotateButton.linkOffsetX = 20;
 
     container.uiControls.push(rotateButton);
   }
 
   if (onContainerUp) {
-    const upButton = Button.CreateSimpleButton(`up-${container.id}`, "up");
+    const upButton = Button.CreateSimpleButton(`up-${container.mesh.id}`, "up");
     upButton.width = "20px";
     upButton.height = "20px";
     upButton.onPointerDownObservable.add(onContainerUp);
 
     uiTexture.addControl(upButton);
 
-    upButton.linkWithMesh(container);
+    upButton.linkWithMesh(container.mesh);
     upButton.linkOffsetX = 40;
     upButton.linkOffsetY = -10;
 
@@ -187,7 +187,7 @@ export const createContainerUI = (
 
   if (onContainerDown) {
     const downButton = Button.CreateSimpleButton(
-      `down-${container.id}`,
+      `down-${container.mesh.id}`,
       "down"
     );
     downButton.width = "20px";
@@ -196,7 +196,7 @@ export const createContainerUI = (
 
     uiTexture.addControl(downButton);
 
-    downButton.linkWithMesh(container);
+    downButton.linkWithMesh(container.mesh);
     downButton.linkOffsetX = 40;
     downButton.linkOffsetY = 10;
 

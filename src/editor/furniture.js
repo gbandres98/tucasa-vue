@@ -5,6 +5,7 @@ import { ref, getDownloadURL } from "firebase/storage";
 import { activeFloor, getClosestWallToPointer, wallHash, } from "@/editor/indoorEditor";
 import { scene } from "@/editor/editor";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEditorStore } from "@/stores/editor.store";
 const furnitures = new Map();
 let activeCallBack;
 export const getModels = async (type) => {
@@ -14,12 +15,7 @@ export const getModels = async (type) => {
     return snap.docs.map((doc) => doc.data());
 };
 export const startFurniturePlacement = async (model) => {
-    // const model = {
-    //   name: "door.glb",
-    //   scaling: [0.015, 0.015, 0.015],
-    //   wall: true,
-    // };
-    const url = await getDownloadURL(ref(storage, model.name));
+    const url = await getDownloadURL(ref(storage, model.file));
     SceneLoader.ImportMesh("", url, "door.glb", scene, (meshes) => {
         const root = meshes[0];
         root.scaling = new Vector3(model.scaling, model.scaling, model.scaling);
@@ -32,15 +28,14 @@ export const startFurniturePlacement = async (model) => {
             }
             child.rotation = new Vector3(0, Tools.ToRadians(180), 0);
         }
-        activeCallBack = furniturePlacementCallback(root);
+        activeCallBack = furniturePlacementCallback(root, model);
         scene.onPointerObservable.add(activeCallBack);
     });
 };
 const endFurniturePlacement = () => {
-    console.log("A");
     scene.onPointerObservable.removeCallback(activeCallBack);
 };
-const furniturePlacementCallback = (mesh) => (pointerInfo) => {
+const furniturePlacementCallback = (mesh, model) => (pointerInfo) => {
     const wall = getClosestWallToPointer(true);
     if (!wall || wall.status != "enabled")
         return;
@@ -48,7 +43,14 @@ const furniturePlacementCallback = (mesh) => (pointerInfo) => {
         pointerInfo.event.button == 0) {
         if (furnitures.has(wallHash(wall)))
             return;
-        furnitures.set(wallHash(wall), mesh);
+        const hash = wallHash(wall);
+        furnitures.set(hash, mesh);
+        updateStoreFurniture({
+            position: mesh.position,
+            rotation: mesh.rotation,
+            wallHash: hash,
+            model: model,
+        });
         endFurniturePlacement();
         return;
     }
@@ -77,5 +79,11 @@ const removeFurnitureError = (root) => {
             return;
         mesh.material.albedoColor = new Color3(1, 1, 1);
     });
+};
+const updateStoreFurniture = (model) => {
+    const newArray = [];
+    useEditorStore().modelData.forEach((model) => newArray.push(model));
+    newArray.push(model);
+    useEditorStore().modelData = newArray;
 };
 //# sourceMappingURL=furniture.js.map

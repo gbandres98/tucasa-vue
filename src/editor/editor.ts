@@ -10,6 +10,7 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { createBackground } from "@/editor/background";
+import type { Area } from "@/editor/grid";
 import {
   cancelAreaSelection,
   clearCellMaterials,
@@ -19,9 +20,9 @@ import {
   gridToWorld,
   highlightCells,
 } from "@/editor/grid";
+import type { Container } from "@/editor/container";
 import {
-  Container,
-  createContainer,
+  createContainerMesh,
   isContainerColliding,
   isSupported,
   startContainerDeletionSelection,
@@ -98,14 +99,10 @@ const realSizeZ = () => {
   return sizeJ * 2.5;
 };
 
-export const startContainerCreation = async () => {
-  useEditorStore().isAddContainerActive = true;
-
-  const area = await enableAreaSelection();
-
-  const container = createContainer(area.sizeI(), area.sizeJ());
+function createContainer(area: Area) {
+  const container = createContainerMesh(area.sizeI(), area.sizeJ());
   addContainerDragBehavior(container);
-  container.position = lowerCornerToCenter(
+  container.mesh.position = lowerCornerToCenter(
     gridToWorld(
       new GridCoords(area.firstI(), area.firstJ()),
       useEditorStore().activeFloor * 4 + 2
@@ -115,7 +112,16 @@ export const startContainerCreation = async () => {
   );
 
   validatePositionAll();
+}
 
+export const startContainerCreation = async () => {
+  useEditorStore().isAddContainerActive = true;
+
+  const area = await enableAreaSelection();
+
+  createContainer(area);
+
+  useEditorStore().containerData = getContainerData();
   useEditorStore().isAddContainerActive = false;
 };
 
@@ -129,7 +135,7 @@ export const startContainerRemoval = async () => {
   startContainerDeletionSelection();
 };
 
-export const stopContainerRemoval = async () => {
+export const stopContainerRemoval = () => {
   useEditorStore().isRemoveContainerActive = false;
   stopContainerDeletion();
 };
@@ -143,10 +149,10 @@ const addContainerDragBehavior = (container: Container) => {
 
   dragBehavior.onDragStartObservable.add(() => {
     scene.hoverCursor = "grabbing";
-    container.lastCorrectPosition = container.position;
+    container.lastCorrectPosition = container.mesh.position;
 
     if (validatePosition(container))
-      container.material = container.wallGhostMaterial;
+      container.mesh.material = container.wallGhostMaterial;
   });
 
   dragBehavior.onDragEndObservable.add(() => {
@@ -154,7 +160,7 @@ const addContainerDragBehavior = (container: Container) => {
     clearCellMaterials();
 
     if (isContainerColliding(container))
-      container.position = container.lastCorrectPosition;
+      container.mesh.position = container.lastCorrectPosition;
 
     validatePosition(container);
   });
@@ -177,7 +183,7 @@ const addContainerDragBehavior = (container: Container) => {
     if (j + container.sizeJ > sizeJ) j = sizeJ - container.sizeJ + 1;
 
     const fixedLowerCorner = new Vector3(i * 2.5, newLowerCorner.y, j * 2.5);
-    container.position = lowerCornerToCenter(
+    container.mesh.position = lowerCornerToCenter(
       fixedLowerCorner,
       container.sizeI,
       container.sizeJ
@@ -186,33 +192,45 @@ const addContainerDragBehavior = (container: Container) => {
     highlightCells(getContainerArea(container));
 
     if (isContainerColliding(container)) {
-      container.material = container.wallErrorMaterial;
+      container.mesh.material = container.wallErrorMaterial;
       return;
     } else {
-      container.material = container.wallGhostMaterial;
-      container.lastCorrectPosition = container.position;
+      container.mesh.material = container.wallGhostMaterial;
+      container.lastCorrectPosition = container.mesh.position;
     }
 
     if (isSupported(container))
-      container.material = container.wallGhostMaterial;
-    else container.material = container.wallErrorMaterial;
+      container.mesh.material = container.wallGhostMaterial;
+    else container.mesh.material = container.wallErrorMaterial;
 
     validatePositionAll();
   });
 
-  container.addBehavior(dragBehavior);
+  container.mesh.addBehavior(dragBehavior);
 
-  container.actionManager = new ActionManager(scene);
+  container.mesh.actionManager = new ActionManager(scene);
 
-  container.actionManager.registerAction(
+  container.mesh.actionManager.registerAction(
     new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
       scene.hoverCursor = "grab";
     })
   );
 
-  container.actionManager.registerAction(
+  container.mesh.actionManager.registerAction(
     new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
       scene.hoverCursor = "default";
     })
   );
 };
+
+export const getContainerData = () =>
+  useEditorStore().containers.map((container) => ({
+    sizeI: container.sizeI,
+    sizeJ: container.sizeJ,
+    floor: container.floor,
+    position: {
+      x: container.mesh.position.x,
+      y: container.mesh.position.y,
+      z: container.mesh.position.z,
+    },
+  }));

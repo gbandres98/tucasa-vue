@@ -8,7 +8,11 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth && (request.auth.token.role in ["STAFF", "ADMIN"]);
     }
-    match /terrains/{model} {
+    match /terrains/{terrain} {
+      allow read: if true;
+      allow write: if request.auth && (request.auth.token.role in ["STAFF", "ADMIN"]);
+    }
+    match /options/{option} {
       allow read: if true;
       allow write: if request.auth && (request.auth.token.role in ["STAFF", "ADMIN"]);
     }

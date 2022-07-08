@@ -23,6 +23,9 @@ export const areasOverlap = (area1, area2) => {
         return false;
     return true;
 };
+export const getContainerArea = (container) => {
+    return new Area(worldToGrid(centerToLowerCorner(container.mesh.position, container.sizeI, container.sizeJ)), worldToGrid(centerToUpperCorner(container.mesh.position, container.sizeI, container.sizeJ)));
+};
 export const isPointInArea = (point, area) => {
     if (point.i < area.firstI() || point.i > area.lastI())
         return false;
@@ -30,5 +33,18 @@ export const isPointInArea = (point, area) => {
         return false;
     return true;
 };
-export const getContainerArea = (container) => new Area(worldToGrid(centerToLowerCorner(container.position, container.sizeI, container.sizeJ)), worldToGrid(centerToUpperCorner(container.position, container.sizeI, container.sizeJ)));
+export const getPrice = (containers, terrain) => {
+    let price = 0;
+    price += 15000;
+    containers.forEach((container) => {
+        price += getContainerPrice(container);
+    });
+    if (terrain)
+        price += terrain.price;
+    return price;
+};
+export const getContainerPrice = (container) => {
+    const area = container.sizeI * 2.5 * container.sizeJ * 2.5;
+    return area * (800 + 100 * container.floor);
+};
 //# sourceMappingURL=util.js.map

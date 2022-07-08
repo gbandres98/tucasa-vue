@@ -1,7 +1,7 @@
 import { ActionManager, ArcRotateCamera, Engine, ExecuteCodeAction, HemisphericLight, PointerDragBehavior, Scene, Tools, Vector3, } from "@babylonjs/core";
 import { createBackground } from "@/editor/background";
 import { cancelAreaSelection, clearCellMaterials, createGrid, enableAreaSelection, GridCoords, gridToWorld, highlightCells, } from "@/editor/grid";
-import { Container, createContainer, isContainerColliding, isSupported, startContainerDeletionSelection, stopContainerDeletion, validatePosition, validatePositionAll, } from "@/editor/container";
+import { createContainerMesh, isContainerColliding, isSupported, startContainerDeletionSelection, stopContainerDeletion, validatePosition, validatePositionAll, } from "@/editor/container";
 import { centerToLowerCorner, getContainerArea, lowerCornerToCenter, } from "@/editor/util";
 import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
@@ -46,13 +46,17 @@ const realSizeX = () => {
 const realSizeZ = () => {
     return sizeJ * 2.5;
 };
+function createContainer(area) {
+    const container = createContainerMesh(area.sizeI(), area.sizeJ());
+    addContainerDragBehavior(container);
+    container.mesh.position = lowerCornerToCenter(gridToWorld(new GridCoords(area.firstI(), area.firstJ()), useEditorStore().activeFloor * 4 + 2), container.sizeI, container.sizeJ);
+    validatePositionAll();
+}
 export const startContainerCreation = async () => {
     useEditorStore().isAddContainerActive = true;
     const area = await enableAreaSelection();
-    const container = createContainer(area.sizeI(), area.sizeJ());
-    addContainerDragBehavior(container);
-    container.position = lowerCornerToCenter(gridToWorld(new GridCoords(area.firstI(), area.firstJ()), useEditorStore().activeFloor * 4 + 2), container.sizeI, container.sizeJ);
-    validatePositionAll();
+    createContainer(area);
+    useEditorStore().containerData = getContainerData();
     useEditorStore().isAddContainerActive = false;
 };
 export const stopContainerCreation = () => {
@@ -63,7 +67,7 @@ export const startContainerRemoval = async () => {
     useEditorStore().isRemoveContainerActive = true;
     startContainerDeletionSelection();
 };
-export const stopContainerRemoval = async () => {
+export const stopContainerRemoval = () => {
     useEditorStore().isRemoveContainerActive = false;
     stopContainerDeletion();
 };
@@ -75,15 +79,15 @@ const addContainerDragBehavior = (container) => {
     dragBehavior.moveAttached = false;
     dragBehavior.onDragStartObservable.add(() => {
         scene.hoverCursor = "grabbing";
-        container.lastCorrectPosition = container.position;
+        container.lastCorrectPosition = container.mesh.position;
         if (validatePosition(container))
-            container.material = container.wallGhostMaterial;
+            container.mesh.material = container.wallGhostMaterial;
     });
     dragBehavior.onDragEndObservable.add(() => {
         scene.hoverCursor = "grab";
         clearCellMaterials();
         if (isContainerColliding(container))
-            container.position = container.lastCorrectPosition;
+            container.mesh.position = container.lastCorrectPosition;
         validatePosition(container);
     });
     dragBehavior.onDragObservable.add((event) => {
@@ -100,29 +104,39 @@ const addContainerDragBehavior = (container) => {
         if (j + container.sizeJ > sizeJ)
             j = sizeJ - container.sizeJ + 1;
         const fixedLowerCorner = new Vector3(i * 2.5, newLowerCorner.y, j * 2.5);
-        container.position = lowerCornerToCenter(fixedLowerCorner, container.sizeI, container.sizeJ);
+        container.mesh.position = lowerCornerToCenter(fixedLowerCorner, container.sizeI, container.sizeJ);
         highlightCells(getContainerArea(container));
         if (isContainerColliding(container)) {
-            container.material = container.wallErrorMaterial;
+            container.mesh.material = container.wallErrorMaterial;
             return;
         }
         else {
-            container.material = container.wallGhostMaterial;
-            container.lastCorrectPosition = container.position;
+            container.mesh.material = container.wallGhostMaterial;
+            container.lastCorrectPosition = container.mesh.position;
         }
         if (isSupported(container))
-            container.material = container.wallGhostMaterial;
+            container.mesh.material = container.wallGhostMaterial;
         else
-            container.material = container.wallErrorMaterial;
+            container.mesh.material = container.wallErrorMaterial;
         validatePositionAll();
     });
-    container.addBehavior(dragBehavior);
-    container.actionManager = new ActionManager(scene);
-    container.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
+    container.mesh.addBehavior(dragBehavior);
+    container.mesh.actionManager = new ActionManager(scene);
+    container.mesh.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
         scene.hoverCursor = "grab";
     }));
-    container.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
+    container.mesh.actionManager.registerAction(new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
         scene.hoverCursor = "default";
     }));
 };
+export const getContainerData = () => useEditorStore().containers.map((container) => ({
+    sizeI: container.sizeI,
+    sizeJ: container.sizeJ,
+    floor: container.floor,
+    position: {
+        x: container.mesh.position.x,
+        y: container.mesh.position.y,
+        z: container.mesh.position.z,
+    },
+}));
 //# sourceMappingURL=editor.js.map

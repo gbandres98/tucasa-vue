@@ -34,30 +34,22 @@
       <font-awesome-icon class="tool-icon" icon="trash-can" />
       <span class="tool-text">Eliminar paredes</span>
     </div>
-    <div
-      v-if="step === 3"
-      :class="{ tool: true, active: isRemoveWallActive }"
-      @click="removeWall"
-    >
-      <font-awesome-icon class="tool-icon" icon="door-closed" />
+    <div v-if="step === 3" :class="{ tool: true, active: isDoorPickerActive }">
+      <font-awesome-icon
+        class="tool-icon"
+        icon="door-closed"
+        @click="openDoorPicker"
+      />
       <span class="tool-text">Puertas</span>
-      <FurniturePanel />
+      <FurniturePanel v-show="isDoorPickerActive" />
     </div>
-    <div
-      v-if="step === 3"
-      :class="{ tool: true, active: isRemoveWallActive }"
-      @click="removeWall"
-    >
+    <div v-if="step === 3" :class="{ tool: true, active: false }">
       <div class="tool-icon">
         <img :src="windowIcon" alt="añadir paredes" />
       </div>
       <span class="tool-text">Ventanas</span>
     </div>
-    <div
-      v-if="step === 3"
-      :class="{ tool: true, active: isRemoveWallActive }"
-      @click="removeWall"
-    >
+    <div v-if="step === 3" :class="{ tool: true, active: false }">
       <font-awesome-icon class="tool-icon" icon="couch" />
       <span class="tool-text">Muebles</span>
     </div>
@@ -108,6 +100,7 @@ const {
   isRemoveContainerActive,
   isAddWallActive,
   isRemoveWallActive,
+  isDoorPickerActive,
 } = storeToRefs(useEditorStore());
 
 function addContainer() {
@@ -145,7 +138,17 @@ function floorDown() {
 function nextStep() {
   if (step.value == 2) {
     startIndoorEditor();
+    return;
   }
+
+  if (step.value == 3) {
+    step.value = 4;
+    return;
+  }
+}
+
+function openDoorPicker() {
+  isDoorPickerActive.value = !isDoorPickerActive.value;
 }
 </script>
 

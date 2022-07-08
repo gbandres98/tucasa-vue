@@ -9,40 +9,53 @@
     </div>
     <div class="price-detail" :class="{ open: open }">
       <div class="price">
-        <span>Parcela</span>
+        <span>Parcela:</span>
         <span>{{ `${terrain.price.toLocaleString()}€` }}</span>
       </div>
       <div class="price">
-        <span>Contenedores (m2)</span>
-        <span>7.000,00€</span>
+        <span>Containers:</span>
+        <span>{{ containersPrice.toLocaleString() }}€</span>
       </div>
       <div class="price">
-        <span>Contenedores (m2)</span>
-        <span>7.000,00€</span>
+        <span>Obra:</span>
+        <span>{{ wallPrices.toLocaleString() }}€</span>
+      </div>
+      <div class="price">
+        <span>Extras:</span>
+        <span>{{ furniturePrices.toLocaleString() }}€</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from "vue";
+import { computed, ref } from "vue";
 import { storeToRefs } from "pinia";
 import { useEditorStore } from "@/stores/editor.store";
-import type { Container } from "@/editor/container";
+import { getPrice, getContainerPrice } from "@/editor/util";
+import type { ContainerData } from "@/model/model";
 
 const open = ref(false);
-const { containers, terrain, price } = storeToRefs(useEditorStore());
+const { containerData, terrain, walls, modelData } = storeToRefs(
+  useEditorStore()
+);
 
-const firstFloorContainerPrice = computed(() => {
-  return containers.value.filter(
-    // @ts-ignore
-    (container: Container) => container.floor === 0
+const containersPrice = computed((): number => {
+  return containerData.value.reduce(
+    (sum, container) => sum + getContainerPrice(container),
+    0
   );
 });
 
-const floors = computed(() => [
-  ...new Set(containers.value.map((container) => container.floor)),
-]);
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+const price = computed(() => getPrice(containerData.value, terrain.value));
+
+const wallPrices = computed(() => 20000 + walls.value.length * 80);
+
+const furniturePrices = computed(() =>
+  modelData.value.reduce((acc, model) => acc + model.model.price, 0)
+);
 </script>
 
 <style scoped>

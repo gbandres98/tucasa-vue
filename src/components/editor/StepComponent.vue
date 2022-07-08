@@ -14,14 +14,13 @@ import { storeToRefs } from "pinia";
 const { step } = storeToRefs(useEditorStore());
 
 function getClasses(i: number) {
-  const a = {
+  return {
     step: true,
     done: step.value > i,
     active: step.value == i,
     next: step.value + 1 == i,
     disabled: step.value > i + 1,
   };
-  return a;
 }
 </script>
 

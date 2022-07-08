@@ -1,6 +1,6 @@
 import { Area, disableGridEffects, GridCoords, gridToWorld, worldToGrid, } from "@/editor/grid";
 import { ArcRotateCamera, Matrix, Mesh, MeshBuilder, Plane, PointerEventTypes, PointerInfo, Scene, Vector3, } from "@babylonjs/core";
-import { Container, deleteContainer, MAX_FLOOR } from "@/editor/container";
+import { deleteContainer, MAX_FLOOR } from "@/editor/container";
 import { getContainerArea, isPointInArea, lowerCornerToCenter, } from "@/editor/util";
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
@@ -78,6 +78,7 @@ const wallCreationCallback = (pointerInfo) => {
         pointerInfo.event.button == 0) {
         if (lastWallGhost && lastWallGhost.status == "ghost")
             setWallStatus(lastWallGhost, "enabled");
+        useEditorStore().walls = getWallData();
         return;
     }
     if (lastWallGhost && lastWallGhost.status == "ghost")
@@ -95,6 +96,7 @@ const wallDeletionCallback = (pointerInfo) => {
         pointerInfo.event.button == 0) {
         if (lastWallGhost && lastWallGhost.status == "error")
             setWallStatus(lastWallGhost, "disabled");
+        useEditorStore().walls = getWallData();
         return;
     }
     if (lastWallGhost && lastWallGhost.status == "error")
@@ -336,4 +338,20 @@ const hideWalls = (floor) => {
         .forEach((wall) => setWallStatus(wall, "hidden"));
 };
 export const wallHash = (wall) => `${wall.start.hash()}|${wall.end.hash()}`;
+export const getWallData = () => {
+    const wallData = [];
+    for (const wall of walls.values()) {
+        if (wall.status != "enabled")
+            continue;
+        if (wall.container)
+            continue;
+        wallData.push({
+            start: wall.start,
+            end: wall.end,
+            floor: wall.floor,
+            vertical: wall.vertical,
+        });
+    }
+    return wallData;
+};
 //# sourceMappingURL=indoorEditor.js.map

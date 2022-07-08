@@ -3,39 +3,35 @@ import { areasOverlap, centerToLowerCorner, getContainerArea, lowerCornerToCente
 import { createContainerUI, deleteContainerUI } from "@/editor/ui";
 import { wallErrorMaterial, wallGhostMaterial, wallMaterial, } from "@/editor/materials";
 import { useEditorStore } from "@/stores/editor.store";
+import { getContainerData, stopContainerCreation, stopContainerRemoval, } from "@/editor/editor";
 export const MAX_FLOOR = 2;
-const containers = useEditorStore()
-    .containers;
-export class Container extends Mesh {
-    sizeI;
-    sizeJ;
-    floor;
-    lastCorrectPosition;
-    wallMaterial;
-    wallGhostMaterial;
-    wallErrorMaterial;
-    deletionBehaviors;
-    uiControls;
-}
-export const createContainer = (sizeI, sizeJ) => {
-    const container = MeshBuilder.CreateBox(`container-${Date.now()}`, {
+export const createContainerMesh = (sizeI, sizeJ) => {
+    const mesh = MeshBuilder.CreateBox(`container-${Date.now()}`, {
         width: 2.5,
         depth: 2.5,
         height: 4,
         updatable: true,
     });
-    container.material = wallMaterial;
-    container.wallMaterial = wallMaterial;
-    container.wallGhostMaterial = wallGhostMaterial;
-    container.wallErrorMaterial = wallErrorMaterial;
-    container.position.y = useEditorStore().activeFloor * 4 + 2;
+    const container = {
+        wallMaterial: wallMaterial,
+        wallGhostMaterial: wallGhostMaterial,
+        wallErrorMaterial: wallErrorMaterial,
+        floor: useEditorStore().activeFloor,
+        sizeI: sizeI,
+        sizeJ: sizeJ,
+        mesh: mesh,
+        lastCorrectPosition: mesh.position,
+        deletionBehaviors: [],
+        uiControls: [],
+    };
+    container.mesh.material = wallMaterial;
+    container.mesh.position.y = useEditorStore().activeFloor * 4 + 2;
     resizeContainer(container, sizeI, sizeJ);
-    container.floor = useEditorStore().activeFloor;
-    container.isPickable = true;
-    container.enablePointerMoveEvents = true;
-    container.actionManager = new ActionManager();
-    container.actionManager.hoverCursor = "grab";
-    containers.push(container);
+    container.mesh.isPickable = true;
+    container.mesh.enablePointerMoveEvents = true;
+    container.mesh.actionManager = new ActionManager();
+    container.mesh.actionManager.hoverCursor = "grab";
+    useEditorStore().containers.push(container);
     container.deletionBehaviors = [];
     container.uiControls = [];
     createContainerUI(container, () => deleteContainer(container), () => rotateContainer(container), () => increaseContainerFloor(container), () => decreaseContainerFloor(container));
@@ -44,13 +40,13 @@ export const createContainer = (sizeI, sizeJ) => {
 export const resizeContainer = (container, i, j) => {
     container.sizeI = i;
     container.sizeJ = j;
-    container.scaling.x = container.sizeI;
-    container.scaling.z = container.sizeJ;
+    container.mesh.scaling.x = container.sizeI;
+    container.mesh.scaling.z = container.sizeJ;
     correctPosition(container);
     validatePositionAll();
 };
 export const correctPosition = (container) => {
-    const lowerCorner = centerToLowerCorner(container.position, container.sizeI, container.sizeJ);
+    const lowerCorner = centerToLowerCorner(container.mesh.position, container.sizeI, container.sizeJ);
     const newLowerCorner = new Vector3(roundCoord(lowerCorner.x), lowerCorner.y, roundCoord(lowerCorner.z));
     if (newLowerCorner.x < 0) {
         newLowerCorner.x = 0;
@@ -59,42 +55,44 @@ export const correctPosition = (container) => {
         newLowerCorner.z = 0;
     }
     const newPosition = lowerCornerToCenter(newLowerCorner, container.sizeI, container.sizeJ);
-    container.position = newPosition;
+    container.mesh.position = newPosition;
     return newPosition;
 };
 export const roundCoord = (coord) => Math.floor(coord / 2.5 + 0.5) * 2.5;
 export const startContainerDeletionSelection = () => {
-    containers.forEach((container) => {
+    useEditorStore().containers.forEach((container) => {
         const pointerOverAction = new ExecuteCodeAction(ActionManager.OnPointerOverTrigger, function () {
-            container.material = wallErrorMaterial;
+            container.mesh.material = wallErrorMaterial;
         });
-        container.actionManager?.registerAction(pointerOverAction);
+        container.mesh.actionManager?.registerAction(pointerOverAction);
         const pointerOutAction = new ExecuteCodeAction(ActionManager.OnPointerOutTrigger, function () {
-            container.material = wallMaterial;
+            container.mesh.material = wallMaterial;
         });
-        container.actionManager?.registerAction(pointerOutAction);
+        container.mesh.actionManager?.registerAction(pointerOutAction);
         const clickAction = new ExecuteCodeAction(ActionManager.OnLeftPickTrigger, function () {
             deleteContainer(container);
+            useEditorStore().containerData = getContainerData();
+            stopContainerRemoval();
         });
-        container.actionManager?.registerAction(clickAction);
+        container.mesh.actionManager?.registerAction(clickAction);
         container.deletionBehaviors.push(pointerOverAction, pointerOutAction, clickAction);
     });
 };
 export const deleteContainer = (container) => {
-    useEditorStore().containers = containers.filter((c) => c != container);
-    container.dispose();
+    useEditorStore().containers = useEditorStore().containers.filter((c) => c.mesh.id != container.mesh.id);
+    container.mesh.dispose();
     deleteContainerUI(container);
     stopContainerDeletion();
 };
 export const stopContainerDeletion = () => {
-    containers.forEach((container) => {
-        container.deletionBehaviors.forEach((action) => container.actionManager?.unregisterAction(action));
+    useEditorStore().containers.forEach((container) => {
+        container.deletionBehaviors.forEach((action) => container.mesh.actionManager?.unregisterAction(action));
     });
 };
 export const containerInArea = (area, ignoreContainer, floor) => {
     return useEditorStore()
         .containers.filter((container) => {
-        if (container.id === ignoreContainer?.id)
+        if (container.mesh.id === ignoreContainer?.mesh.id)
             return false;
         if (floor != undefined && ignoreContainer && container.floor != floor)
             return false;
@@ -117,27 +115,27 @@ const increaseContainerFloor = (container) => {
     if (container.floor == MAX_FLOOR)
         return;
     container.floor++;
-    container.position.y = 2 + container.floor * 4;
+    container.mesh.position.y = 2 + container.floor * 4;
     validatePositionAll();
 };
 const decreaseContainerFloor = (container) => {
     if (container.floor == 0)
         return;
     container.floor--;
-    container.position.y = 2 + container.floor * 4;
+    container.mesh.position.y = 2 + container.floor * 4;
     validatePositionAll();
 };
 export const validatePosition = (container) => {
     if (isContainerColliding(container) || !isSupported(container)) {
-        container.material = container.wallErrorMaterial;
+        container.mesh.material = container.wallErrorMaterial;
         return false;
     }
-    container.material = container.wallMaterial;
+    container.mesh.material = container.wallMaterial;
     return true;
 };
 export const validatePositionAll = () => {
     let res = true;
-    containers.forEach((container) => {
+    useEditorStore().containers.forEach((container) => {
         if (!validatePosition(container))
             res = false;
     });

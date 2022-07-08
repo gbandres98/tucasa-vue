@@ -5,6 +5,7 @@
     <ToolBarComponent v-if="step === 2 || step === 3" />
     <EditorComponent v-if="step === 2 || step === 3" />
     <PriceComponent v-if="step === 2 || step === 3" />
+    <ConfigComponent v-if="step === 4" />
   </div>
 </template>
 
@@ -16,6 +17,7 @@ import PriceComponent from "@/components/editor/PriceComponent.vue";
 import { storeToRefs } from "pinia";
 import { useEditorStore } from "@/stores/editor.store";
 import TerrainPicker from "@/components/editor/TerrainPicker.vue";
+import ConfigComponent from "@/components/editor/ConfigComponent.vue";
 
 const { step } = storeToRefs(useEditorStore());
 </script>

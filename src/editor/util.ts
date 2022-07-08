@@ -1,6 +1,7 @@
 import { BaseTexture, Vector3 } from "@babylonjs/core";
 import { Area, GridCoords, worldToGrid } from "@/editor/grid";
 import type { Container } from "@/editor/container";
+import type { ContainerData, Terrain } from "@/model/model";
 
 export class ScaledTexture extends BaseTexture {
   uScale: number;
@@ -51,6 +52,25 @@ export const areasOverlap = (area1: Area, area2: Area): boolean => {
   return true;
 };
 
+export const getContainerArea = (container: Container): Area => {
+  return new Area(
+    worldToGrid(
+      centerToLowerCorner(
+        container.mesh.position,
+        container.sizeI,
+        container.sizeJ
+      )
+    ),
+    worldToGrid(
+      centerToUpperCorner(
+        container.mesh.position,
+        container.sizeI,
+        container.sizeJ
+      )
+    )
+  );
+};
+
 export const isPointInArea = (point: GridCoords, area: Area) => {
   if (point.i < area.firstI() || point.i > area.lastI()) return false;
   if (point.j < area.firstJ() || point.j > area.lastJ()) return false;
@@ -58,12 +78,25 @@ export const isPointInArea = (point: GridCoords, area: Area) => {
   return true;
 };
 
-export const getContainerArea = (container: Container): Area =>
-  new Area(
-    worldToGrid(
-      centerToLowerCorner(container.position, container.sizeI, container.sizeJ)
-    ),
-    worldToGrid(
-      centerToUpperCorner(container.position, container.sizeI, container.sizeJ)
-    )
-  );
+export const getPrice = (
+  containers: Array<ContainerData>,
+  terrain: Terrain
+): number => {
+  let price = 0;
+
+  price += 15000;
+
+  containers.forEach((container) => {
+    price += getContainerPrice(container);
+  });
+
+  if (terrain) price += terrain.price;
+
+  return price;
+};
+
+export const getContainerPrice = (container: ContainerData) => {
+  const area = container.sizeI * 2.5 * container.sizeJ * 2.5;
+
+  return area * (800 + 100 * container.floor);
+};

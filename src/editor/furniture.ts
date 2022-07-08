@@ -21,6 +21,7 @@ import {
 } from "@/editor/indoorEditor";
 import { scene } from "@/editor/editor";
 import { collection, getDocs, query, where } from "firebase/firestore";
+import { useEditorStore } from "@/stores/editor.store";
 
 export type Model = {
   name: string;
@@ -31,6 +32,13 @@ export type Model = {
   wall: boolean;
   window: boolean;
   wallOffset: number | undefined;
+};
+
+export type PlacedModel = {
+  position: Vector3;
+  rotation: Vector3;
+  wallHash: string;
+  model: Model;
 };
 
 const furnitures: Map<string, AbstractMesh> = new Map<string, AbstractMesh>();
@@ -46,13 +54,7 @@ export const getModels = async (type: string) => {
 };
 
 export const startFurniturePlacement = async (model: Model) => {
-  // const model = {
-  //   name: "door.glb",
-  //   scaling: [0.015, 0.015, 0.015],
-  //   wall: true,
-  // };
-
-  const url = await getDownloadURL(ref(storage, model.name));
+  const url = await getDownloadURL(ref(storage, model.file));
 
   SceneLoader.ImportMesh("", url, "door.glb", scene, (meshes) => {
     const root = meshes[0];
@@ -72,18 +74,17 @@ export const startFurniturePlacement = async (model: Model) => {
       child.rotation = new Vector3(0, Tools.ToRadians(180), 0);
     }
 
-    activeCallBack = furniturePlacementCallback(root);
+    activeCallBack = furniturePlacementCallback(root, model);
     scene.onPointerObservable.add(activeCallBack);
   });
 };
 
 const endFurniturePlacement = () => {
-  console.log("A");
   scene.onPointerObservable.removeCallback(activeCallBack);
 };
 
 const furniturePlacementCallback =
-  (mesh: AbstractMesh) => (pointerInfo: PointerInfo) => {
+  (mesh: AbstractMesh, model: Model) => (pointerInfo: PointerInfo) => {
     const wall = getClosestWallToPointer(true);
 
     if (!wall || wall.status != "enabled") return;
@@ -93,7 +94,14 @@ const furniturePlacementCallback =
       pointerInfo.event.button == 0
     ) {
       if (furnitures.has(wallHash(wall))) return;
-      furnitures.set(wallHash(wall), mesh);
+      const hash = wallHash(wall);
+      furnitures.set(hash, mesh);
+      updateStoreFurniture({
+        position: mesh.position,
+        rotation: mesh.rotation,
+        wallHash: hash,
+        model: model,
+      });
       endFurniturePlacement();
       return;
     }
@@ -125,4 +133,13 @@ const removeFurnitureError = (root: AbstractMesh) => {
     if (!mesh.material) return;
     (mesh.material as PBRMaterial).albedoColor = new Color3(1, 1, 1);
   });
+};
+
+const updateStoreFurniture = (model: PlacedModel) => {
+  const newArray: Array<PlacedModel> = [];
+
+  useEditorStore().modelData.forEach((model) => newArray.push(model));
+  newArray.push(model);
+
+  useEditorStore().modelData = newArray;
 };

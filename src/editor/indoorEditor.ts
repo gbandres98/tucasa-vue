@@ -16,7 +16,8 @@ import {
   Scene,
   Vector3,
 } from "@babylonjs/core";
-import { Container, deleteContainer, MAX_FLOOR } from "@/editor/container";
+import type { Container } from "@/editor/container";
+import { deleteContainer, MAX_FLOOR } from "@/editor/container";
 import {
   getContainerArea,
   isPointInArea,
@@ -57,6 +58,13 @@ class ContainerData {
     this.area = getContainerArea(container);
   }
 }
+
+export type WallData = {
+  start: GridCoords;
+  end: GridCoords;
+  floor: number;
+  vertical: boolean;
+};
 
 export let activeFloor = 0;
 let lastWallGhost: Wall;
@@ -127,6 +135,8 @@ const wallCreationCallback = (pointerInfo: PointerInfo) => {
     if (lastWallGhost && lastWallGhost.status == "ghost")
       setWallStatus(lastWallGhost, "enabled");
 
+    useEditorStore().walls = getWallData();
+
     return;
   }
 
@@ -149,6 +159,8 @@ const wallDeletionCallback = (pointerInfo: PointerInfo) => {
   ) {
     if (lastWallGhost && lastWallGhost.status == "error")
       setWallStatus(lastWallGhost, "disabled");
+
+    useEditorStore().walls = getWallData();
 
     return;
   }
@@ -487,3 +499,21 @@ const hideWalls = (floor: number) => {
 
 export const wallHash = (wall: Wall) =>
   `${wall.start.hash()}|${wall.end.hash()}`;
+
+export const getWallData = () => {
+  const wallData: Array<WallData> = [];
+
+  for (const wall of walls.values()) {
+    if (wall.status != "enabled") continue;
+    if (wall.container) continue;
+
+    wallData.push({
+      start: wall.start,
+      end: wall.end,
+      floor: wall.floor,
+      vertical: wall.vertical,
+    });
+  }
+
+  return wallData;
+};
