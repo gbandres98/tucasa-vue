@@ -7,12 +7,14 @@ import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
 import "@babylonjs/inspector";
 import { useEditorStore } from "@/stores/editor.store";
+import { startIndoorEditor } from "@/editor/indoorEditor";
+import { getDesign, processDesign } from "@/editor/design";
 let engine;
 let canvas;
 export let sizeI, sizeJ;
 export let camera;
 export let scene;
-export const createScene = (editorCanvas) => {
+export const createScene = (editorCanvas, view) => {
     const { terrain } = useEditorStore();
     if (!terrain || !terrain.sizeX || !terrain.sizeY)
         return;
@@ -31,6 +33,11 @@ export const createScene = (editorCanvas) => {
     engine.runRenderLoop(() => {
         scene.render();
     });
+    if (view) {
+        const design = getDesign(view);
+        if (design)
+            startIndoorEditor(design);
+    }
 };
 const createCamera = () => {
     const distance = realSizeX() + realSizeZ();
@@ -133,10 +140,6 @@ export const getContainerData = () => useEditorStore().containers.map((container
     sizeI: container.sizeI,
     sizeJ: container.sizeJ,
     floor: container.floor,
-    position: {
-        x: container.mesh.position.x,
-        y: container.mesh.position.y,
-        z: container.mesh.position.z,
-    },
+    area: getContainerArea(container),
 }));
 //# sourceMappingURL=editor.js.map

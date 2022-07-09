@@ -1,7 +1,10 @@
 import { BaseTexture, Vector3 } from "@babylonjs/core";
 import { Area, GridCoords, worldToGrid } from "@/editor/grid";
 import type { Container } from "@/editor/container";
-import type { ContainerData, Terrain } from "@/model/model";
+import type { ContainerData, Design, Terrain } from "@/model/model";
+import { useEditorStore } from "@/stores/editor.store";
+import { getContainerData } from "@/editor/editor";
+import { containerData } from "@/editor/indoorEditor";
 
 export class ScaledTexture extends BaseTexture {
   uScale: number;
@@ -100,3 +103,17 @@ export const getContainerPrice = (container: ContainerData) => {
 
   return area * (800 + 100 * container.floor);
 };
+
+export const localSaveDesign = () => {
+  const design = generateDesign();
+
+  localStorage.setItem("design", JSON.stringify(design));
+};
+
+export const generateDesign = (): Design => ({
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  terrain: useEditorStore().terrain!,
+  containers: containerData,
+  walls: useEditorStore().walls,
+  furniture: useEditorStore().modelData,
+});

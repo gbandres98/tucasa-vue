@@ -14,6 +14,7 @@ export const useEditorStore = defineStore({
         containerData: [],
         walls: [],
         modelData: [],
+        options: [],
     }),
     actions: {
         selectTerrain(terrain) {

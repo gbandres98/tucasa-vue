@@ -1,7 +1,7 @@
 import { Area, disableGridEffects, GridCoords, gridToWorld, worldToGrid, } from "@/editor/grid";
 import { ArcRotateCamera, Matrix, Mesh, MeshBuilder, Plane, PointerEventTypes, PointerInfo, Scene, Vector3, } from "@babylonjs/core";
 import { deleteContainer, MAX_FLOOR } from "@/editor/container";
-import { getContainerArea, isPointInArea, lowerCornerToCenter, } from "@/editor/util";
+import { areasOverlap, getContainerArea, isPointInArea, lowerCornerToCenter, } from "@/editor/util";
 import "@babylonjs/core/Debug/debugLayer";
 import "@babylonjs/inspector";
 import { switchToIndoorUI } from "@/editor/ui";
@@ -18,7 +18,7 @@ class Wall extends Mesh {
     container;
     hidden;
 }
-class ContainerData {
+export class IndoorContainerData {
     floor;
     area;
     constructor(container) {
@@ -34,16 +34,24 @@ const walls = new Map();
 const walls1 = [];
 const floors = [];
 const roofs = [];
-const containerData = [];
-export const startIndoorEditor = () => {
-    useEditorStore().step = 3;
+export let containerData = [];
+export const startIndoorEditor = (design) => {
+    if (!design)
+        useEditorStore().step = 3;
     disableGridEffects();
-    disposeContainers();
+    if (!design)
+        disposeContainers();
+    else
+        containerDataFromDesign(design);
     generateWalls(sizeI, sizeJ);
     generateFloors();
     changeFloor(0);
     enableContainerWalls();
+    if (design)
+        enableDesignWalls(design);
     showHiddenWalls(activeFloor);
+    if (design)
+        startViewMode();
 };
 export const startWallCreation = () => {
     if (wallCreationActive) {
@@ -196,8 +204,13 @@ const enableContainerWalls = () => {
         });
     });
 };
+const enableDesignWalls = (design) => {
+    design.walls.forEach((wall) => {
+        enableWallsBetweenPoints(wall.start, wall.end, wall.floor);
+    });
+};
 const disposeContainers = () => useEditorStore().containers.forEach((container) => {
-    containerData.push(new ContainerData(container));
+    containerData.push(new IndoorContainerData(container));
     deleteContainer(container);
 });
 const getContainerCorners = (container) => {
@@ -353,5 +366,18 @@ export const getWallData = () => {
         });
     }
     return wallData;
+};
+const containerDataFromDesign = (design) => {
+    containerData = design.containers.map((container) => ({
+        floor: container.floor,
+        area: container.area,
+    }));
+};
+const startViewMode = () => {
+    for (let i = 0; i < MAX_FLOOR; i++) {
+        floors[i].forEach((floor) => floor.setEnabled(true));
+        roofs[i].forEach((roof) => roof.setEnabled(true));
+        showHiddenWalls(i);
+    }
 };
 //# sourceMappingURL=indoorEditor.js.map

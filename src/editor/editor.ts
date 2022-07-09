@@ -39,6 +39,9 @@ import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
 import "@babylonjs/inspector";
 import { useEditorStore } from "@/stores/editor.store";
+import type { Design, Terrain } from "@/model/model";
+import { startIndoorEditor } from "@/editor/indoorEditor";
+import { getDesign, processDesign } from "@/editor/design";
 
 let engine: Engine;
 let canvas: HTMLCanvasElement;
@@ -47,8 +50,18 @@ export let sizeI: number, sizeJ: number;
 export let camera: ArcRotateCamera;
 export let scene: Scene;
 
-export const createScene = (editorCanvas: HTMLCanvasElement) => {
-  const { terrain } = useEditorStore();
+export const createScene = (editorCanvas: HTMLCanvasElement, view?: string) => {
+  let design: Design | undefined;
+  let terrain: Terrain | undefined;
+
+  if (view) design = getDesign(view);
+
+  if (design) {
+    terrain = design.terrain;
+    useEditorStore().terrain = terrain;
+  } else {
+    terrain = useEditorStore().terrain;
+  }
 
   if (!terrain || !terrain.sizeX || !terrain.sizeY) return;
 
@@ -72,6 +85,10 @@ export const createScene = (editorCanvas: HTMLCanvasElement) => {
   engine.runRenderLoop(() => {
     scene.render();
   });
+
+  if (view && design) {
+    startIndoorEditor(design);
+  }
 };
 
 const createCamera = () => {
@@ -228,9 +245,5 @@ export const getContainerData = () =>
     sizeI: container.sizeI,
     sizeJ: container.sizeJ,
     floor: container.floor,
-    position: {
-      x: container.mesh.position.x,
-      y: container.mesh.position.y,
-      z: container.mesh.position.z,
-    },
+    area: getContainerArea(container as Container),
   }));

@@ -1,7 +1,14 @@
 <template>
   <div class="price-wrapper">
     <div class="price-summary" @click="open = !open">
-      Precio estimado: <strong>{{ `${price.toLocaleString()}€` }}</strong>
+      Precio estimado:
+      <strong>{{
+        `${total.toLocaleString("es-ES", {
+          style: "decimal",
+          maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+        })}€`
+      }}</strong>
       <font-awesome-icon
         :class="{ 'open-icon': true, open: open }"
         icon="angle-down"
@@ -10,52 +17,80 @@
     <div class="price-detail" :class="{ open: open }">
       <div class="price">
         <span>Parcela:</span>
-        <span>{{ `${terrain.price.toLocaleString()}€` }}</span>
+        <span>{{
+          `${terrainPrice.toLocaleString("es-ES", {
+            style: "decimal",
+            maximumFractionDigits: 2,
+            minimumFractionDigits: 2,
+          })}€`
+        }}</span>
       </div>
       <div class="price">
         <span>Containers:</span>
-        <span>{{ containersPrice.toLocaleString() }}€</span>
+        <span
+          >{{
+            containersPrice.toLocaleString("es-ES", {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          }}€</span
+        >
       </div>
       <div class="price">
         <span>Obra:</span>
-        <span>{{ wallPrices.toLocaleString() }}€</span>
+        <span
+          >{{
+            wallPrice.toLocaleString("es-ES", {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          }}€</span
+        >
       </div>
       <div class="price">
         <span>Extras:</span>
-        <span>{{ furniturePrices.toLocaleString() }}€</span>
+        <span
+          >{{
+            furniturePrice.toLocaleString("es-ES", {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          }}€</span
+        >
+      </div>
+      <div class="price">
+        <span>Configuración:</span>
+        <span
+          >{{
+            optionPrice.toLocaleString("es-ES", {
+              style: "decimal",
+              maximumFractionDigits: 2,
+              minimumFractionDigits: 2,
+            })
+          }}€</span
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { storeToRefs } from "pinia";
-import { useEditorStore } from "@/stores/editor.store";
-import { getPrice, getContainerPrice } from "@/editor/util";
-import type { ContainerData } from "@/model/model";
+import { computed, inject, ref } from "vue";
+import usePriceCalculations from "@/components/editor/usePriceCalculations";
 
 const open = ref(false);
-const { containerData, terrain, walls, modelData } = storeToRefs(
-  useEditorStore()
-);
 
-const containersPrice = computed((): number => {
-  return containerData.value.reduce(
-    (sum, container) => sum + getContainerPrice(container),
-    0
-  );
-});
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const price = computed(() => getPrice(containerData.value, terrain.value));
-
-const wallPrices = computed(() => 20000 + walls.value.length * 80);
-
-const furniturePrices = computed(() =>
-  modelData.value.reduce((acc, model) => acc + model.model.price, 0)
-);
+const {
+  containersPrice,
+  wallPrice,
+  terrainPrice,
+  furniturePrice,
+  optionPrice,
+  total,
+} = usePriceCalculations();
 </script>
 
 <style scoped>
@@ -91,12 +126,12 @@ const furniturePrices = computed(() =>
   margin-top: 10px;
   max-height: 0;
   overflow-y: hidden;
-  transition: 0.3s;
+  transition: 0.5s;
   font-size: 0.8rem;
 }
 
 .price-detail.open {
-  max-height: 150px;
+  max-height: 300px;
 }
 
 .price {

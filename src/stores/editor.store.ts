@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { Container } from "@/editor/container";
-import type { ContainerData, Terrain } from "@/model/model";
+import type { ContainerData, Terrain, Option } from "@/model/model";
 import type { WallData } from "@/editor/indoorEditor";
 import type { PlacedModel } from "@/editor/furniture";
 
@@ -17,6 +17,7 @@ export type EditorState = {
   containerData: Array<ContainerData>;
   walls: Array<WallData>;
   modelData: Array<PlacedModel>;
+  options: Array<Option>;
 };
 
 export const useEditorStore = defineStore({
@@ -34,6 +35,7 @@ export const useEditorStore = defineStore({
     containerData: [],
     walls: [],
     modelData: [],
+    options: [],
   }),
   actions: {
     selectTerrain(terrain: Terrain) {

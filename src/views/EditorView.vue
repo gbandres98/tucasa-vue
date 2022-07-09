@@ -4,7 +4,7 @@
     <TerrainPicker v-if="step === 1" />
     <ToolBarComponent v-if="step === 2 || step === 3" />
     <EditorComponent v-if="step === 2 || step === 3" />
-    <PriceComponent v-if="step === 2 || step === 3" />
+    <PriceComponent v-if="step === 2 || step === 3 || step === 4" />
     <ConfigComponent v-if="step === 4" />
   </div>
 </template>

@@ -93,6 +93,7 @@ import wallIcon from "@/assets/icons/wall.png";
 import windowIcon from "@/assets/icons/window.svg";
 import { startWallCreation, startWallDeletion } from "@/editor/indoorEditor";
 import FurniturePanel from "@/components/editor/FurniturePanel.vue";
+import { localSaveDesign } from "@/editor/util";
 
 const {
   step,
@@ -127,12 +128,12 @@ function removeWall() {
 
 function floorUp() {
   if (step.value == 2) gridUp();
-  if (step.value == 3) increaseFloor();
+  if (step.value == 3 || step.value == 4) increaseFloor();
 }
 
 function floorDown() {
   if (step.value == 2) gridDown();
-  if (step.value == 3) decreaseFloor();
+  if (step.value == 3 || step.value == 4) decreaseFloor();
 }
 
 function nextStep() {
@@ -142,6 +143,7 @@ function nextStep() {
   }
 
   if (step.value == 3) {
+    localSaveDesign();
     step.value = 4;
     return;
   }

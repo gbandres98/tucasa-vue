@@ -6,6 +6,10 @@ import {
   Vector3,
 } from "@babylonjs/core";
 import { Control } from "@babylonjs/gui";
+import type { WallData } from "@/editor/indoorEditor";
+import type { PlacedModel } from "@/editor/furniture";
+import type { Area } from "@/editor/grid";
+import type { IndoorContainerData } from "@/editor/indoorEditor";
 
 export type Province = {
   code: string;
@@ -55,16 +59,25 @@ export type ContainerData = {
   sizeJ: number;
   floor: number;
 
-  position: SimpleVector3;
+  area: Area;
 };
 
 export type Value = {
   name: string;
   description: string;
   price: number;
+  selected: boolean;
 };
 
 export type Option = {
   name: string;
   values: Array<Value>;
+  filled: boolean;
+};
+
+export type Design = {
+  terrain: Terrain;
+  containers: Array<IndoorContainerData>;
+  walls: Array<WallData>;
+  furniture: Array<PlacedModel>;
 };

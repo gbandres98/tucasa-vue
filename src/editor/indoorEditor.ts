@@ -19,6 +19,7 @@ import {
 import type { Container } from "@/editor/container";
 import { deleteContainer, MAX_FLOOR } from "@/editor/container";
 import {
+  areasOverlap,
   getContainerArea,
   isPointInArea,
   lowerCornerToCenter,
@@ -36,6 +37,7 @@ import {
 import { startFurniturePlacement } from "@/editor/furniture";
 import { useEditorStore } from "@/stores/editor.store";
 import { camera, scene, sizeI, sizeJ } from "@/editor/editor";
+import type { Design } from "@/model/model";
 
 type WallStatus = "disabled" | "ghost" | "enabled" | "hidden" | "error";
 
@@ -49,7 +51,7 @@ class Wall extends Mesh {
   hidden: boolean;
 }
 
-class ContainerData {
+export class IndoorContainerData {
   floor: number;
   area: Area;
 
@@ -76,19 +78,25 @@ const walls: Map<string, Wall> = new Map<string, Wall>();
 const walls1: Array<Array<Wall>> = [];
 const floors: Array<Array<Mesh>> = [];
 const roofs: Array<Array<Mesh>> = [];
-const containerData: Array<ContainerData> = [];
+export let containerData: Array<IndoorContainerData> = [];
 
-export const startIndoorEditor = () => {
-  useEditorStore().step = 3;
+export const startIndoorEditor = (design?: Design) => {
+  if (!design) useEditorStore().step = 3;
   disableGridEffects();
-  disposeContainers();
+
+  if (!design) disposeContainers();
+  else containerDataFromDesign(design);
+
   generateWalls(sizeI, sizeJ);
   generateFloors();
 
   changeFloor(0);
 
   enableContainerWalls();
+  if (design) enableDesignWalls(design);
   showHiddenWalls(activeFloor);
+
+  if (design) startViewMode();
 };
 
 export const startWallCreation = () => {
@@ -285,13 +293,19 @@ const enableContainerWalls = () => {
   });
 };
 
+const enableDesignWalls = (design: Design) => {
+  design.walls.forEach((wall) => {
+    enableWallsBetweenPoints(wall.start, wall.end, wall.floor);
+  });
+};
+
 const disposeContainers = () =>
   (useEditorStore().containers as Array<Container>).forEach((container) => {
-    containerData.push(new ContainerData(container));
+    containerData.push(new IndoorContainerData(container));
     deleteContainer(container);
   });
 
-const getContainerCorners = (container: ContainerData) => {
+const getContainerCorners = (container: IndoorContainerData) => {
   const area = container.area;
 
   const bottomLeft = area.start;
@@ -516,4 +530,21 @@ export const getWallData = () => {
   }
 
   return wallData;
+};
+
+const containerDataFromDesign = (design: Design) => {
+  containerData = design.containers.map(
+    (container): IndoorContainerData => ({
+      floor: container.floor,
+      area: container.area,
+    })
+  );
+};
+
+const startViewMode = () => {
+  for (let i = 0; i < MAX_FLOOR; i++) {
+    floors[i].forEach((floor) => floor.setEnabled(true));
+    roofs[i].forEach((roof) => roof.setEnabled(true));
+    showHiddenWalls(i);
+  }
 };
