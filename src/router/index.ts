@@ -14,8 +14,13 @@ const router = createRouter({
       component: () => import("@/views/EditorView.vue"),
     },
     {
-      path: "/casas",
-      name: "casas",
+      path: "/backoffice/opciones",
+      name: "opciones",
+      component: () => import("@/views/backoffice/OptionsView.vue"),
+    },
+    {
+      path: "/backoffice",
+      name: "backoffice",
       component: () => import("@/views/backoffice/HomesView.vue"),
     },
   ],

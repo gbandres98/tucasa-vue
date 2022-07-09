@@ -26,7 +26,6 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
-    "@babylonjs/inspector": "^5.10.0",
     "@rushstack/eslint-patch": "^1.1.0",
     "@types/luxon": "^2.3.2",
     "@types/node": "^16.11.36",

@@ -7,8 +7,14 @@
       </div>
     </RouterLink>
     <div class="links">
-      <RouterLink class="animated-link" to="/casas">Sobre nosotros</RouterLink>
-      <RouterLink class="animated-link" to="/editor">Casos de éxito</RouterLink>
+      <RouterLink class="animated-link" to="/casas" v-if="isUser"
+        >Sobre nosotros</RouterLink
+      >
+      <RouterLink class="animated-link" to="/editor" v-if="isUser"
+        >Casos de éxito</RouterLink
+      >
+      <RouterLink to="/backoffice" v-if="!isUser">Proyectos</RouterLink>
+      <RouterLink to="/backoffice/opciones" v-if="!isUser">Opciones</RouterLink>
     </div>
     <UserBarComponent class="user-bar" />
   </div>
@@ -17,6 +23,13 @@
 <script setup lang="ts">
 import logo from "@/assets/logo.svg";
 import UserBarComponent from "@/components/UserBarComponent.vue";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "@/stores/auth.store";
+import { computed } from "vue";
+
+const { role } = storeToRefs(useAuthStore());
+
+const isUser = computed(() => !role.value || role.value === "USER");
 </script>
 
 <style scoped>

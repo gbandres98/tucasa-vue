@@ -15,7 +15,17 @@ export let sizeI, sizeJ;
 export let camera;
 export let scene;
 export const createScene = (editorCanvas, view) => {
-    const { terrain } = useEditorStore();
+    let design;
+    let terrain;
+    if (view)
+        design = getDesign(view);
+    if (design) {
+        terrain = design.terrain;
+        useEditorStore().terrain = terrain;
+    }
+    else {
+        terrain = useEditorStore().terrain;
+    }
     if (!terrain || !terrain.sizeX || !terrain.sizeY)
         return;
     sizeI = terrain.sizeX / 2.5;
@@ -33,10 +43,8 @@ export const createScene = (editorCanvas, view) => {
     engine.runRenderLoop(() => {
         scene.render();
     });
-    if (view) {
-        const design = getDesign(view);
-        if (design)
-            startIndoorEditor(design);
+    if (view && design) {
+        startIndoorEditor(design);
     }
 };
 const createCamera = () => {

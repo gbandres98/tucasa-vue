@@ -9,6 +9,8 @@ import {
   faAngleDown,
   faDoorClosed,
   faCouch,
+  faPenToSquare,
+  faCheck,
 } from "@fortawesome/free-solid-svg-icons";
 
 import App from "./App.vue";
@@ -23,7 +25,9 @@ library.add(
   faAngleUp,
   faAngleDown,
   faDoorClosed,
-  faCouch
+  faCouch,
+  faPenToSquare,
+  faCheck
 );
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

@@ -113,3 +113,13 @@ form .button-primary {
 ::-webkit-scrollbar-thumb:hover {
     background: #d2d2d2;
 }
+
+.backoffice-panel-wrapper {
+    max-width: 1024px;
+    margin: 50px auto;
+    padding: 0 100px;
+}
+
+.buttons svg {
+    margin: 0 10px;
+}

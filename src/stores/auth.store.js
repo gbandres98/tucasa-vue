@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
+import router from "@/router";
 export const useAuthStore = defineStore({
     id: "auth",
     state: () => {
@@ -25,7 +26,9 @@ onAuthStateChanged(auth, (user) => {
     useAuthStore().user = user;
     if (user) {
         auth.currentUser?.getIdTokenResult().then((idTokenResult) => {
-            useAuthStore().role = idTokenResult.claims.role;
+            const role = idTokenResult.claims.role;
+            useAuthStore().role = role;
+            // if (role === "STAFF" || role === "ADMIN") router.push("/backoffice");
         });
     }
 });

@@ -7,6 +7,7 @@ import {
 } from "firebase/auth";
 import type { User } from "firebase/auth";
 import { auth } from "@/firebase/firebase";
+import router from "@/router";
 
 export type Role = undefined | "USER" | "STAFF" | "ADMIN";
 
@@ -41,7 +42,10 @@ onAuthStateChanged(auth, (user) => {
 
   if (user) {
     auth.currentUser?.getIdTokenResult().then((idTokenResult) => {
-      useAuthStore().role = idTokenResult.claims.role as Role;
+      const role = idTokenResult.claims.role as Role;
+
+      useAuthStore().role = role;
+      // if (role === "STAFF" || role === "ADMIN") router.push("/backoffice");
     });
   }
 });

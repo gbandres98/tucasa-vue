@@ -70,6 +70,7 @@ export type Value = {
 };
 
 export type Option = {
+  id: string;
   name: string;
   values: Array<Value>;
   filled: boolean;
