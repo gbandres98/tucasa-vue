@@ -14,6 +14,11 @@ const router = createRouter({
       component: () => import("@/views/EditorView.vue"),
     },
     {
+      path: "/micasa",
+      name: "micasa",
+      component: () => import("@/views/ProjectView.vue"),
+    },
+    {
       path: "/backoffice/opciones",
       name: "opciones",
       component: () => import("@/views/backoffice/OptionsView.vue"),

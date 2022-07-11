@@ -1,11 +1,4 @@
 import type { DateTime } from "luxon";
-import {
-  ExecuteCodeAction,
-  Mesh,
-  StandardMaterial,
-  Vector3,
-} from "@babylonjs/core";
-import { Control } from "@babylonjs/gui";
 import type { WallData } from "@/editor/indoorEditor";
 import type { PlacedModel } from "@/editor/furniture";
 import type { Area } from "@/editor/grid";
@@ -40,14 +33,6 @@ export type HomeStatus =
   | "WAITING"
   | "FINISHED";
 
-export type Home = {
-  id: number;
-  client: any;
-  assigned: any | undefined;
-  status: HomeStatus;
-  lastModified: DateTime;
-};
-
 export type SimpleVector3 = {
   x: number;
   y: number;
@@ -81,4 +66,37 @@ export type Design = {
   containers: Array<IndoorContainerData>;
   walls: Array<WallData>;
   furniture: Array<PlacedModel>;
+};
+
+export type PaymentInfo = {
+  totalPrice: number;
+  payments: number;
+};
+
+export type ClientInfo = {
+  name: string;
+  surname: string;
+  phone: string;
+  email: string;
+};
+
+export type Staff = {
+  name: string;
+  email: string;
+};
+
+export type Project = {
+  id: number;
+  design: Design;
+  payment: PaymentInfo;
+  client: ClientInfo;
+  assigned: Staff | undefined;
+  status: HomeStatus;
+  lastModified: DateTime;
+};
+
+export type Message = {
+  date: DateTime;
+  text: string;
+  staff: boolean;
 };

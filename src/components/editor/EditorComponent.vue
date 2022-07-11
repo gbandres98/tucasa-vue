@@ -22,10 +22,6 @@ onMounted(() => {
 <style scoped>
 .canvas {
   width: 100%;
-  height: calc(100vh - 117px);
-}
-
-.canvas.reduce {
-  height: calc(100vh - 207px);
+  height: 100%;
 }
 </style>

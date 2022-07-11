@@ -5,7 +5,6 @@ import { createContainerMesh, isContainerColliding, isSupported, startContainerD
 import { centerToLowerCorner, getContainerArea, lowerCornerToCenter, } from "@/editor/util";
 import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
-import "@babylonjs/inspector";
 import { useEditorStore } from "@/stores/editor.store";
 import { startIndoorEditor } from "@/editor/indoorEditor";
 import { getDesign, processDesign } from "@/editor/design";
@@ -14,11 +13,11 @@ let canvas;
 export let sizeI, sizeJ;
 export let camera;
 export let scene;
-export const createScene = (editorCanvas, view) => {
+export const createScene = async (editorCanvas, view) => {
     let design;
     let terrain;
     if (view)
-        design = getDesign(view);
+        design = await getDesign(view);
     if (design) {
         terrain = design.terrain;
         useEditorStore().terrain = terrain;

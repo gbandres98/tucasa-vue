@@ -37,7 +37,6 @@ import {
 } from "@/editor/util";
 import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
-import "@babylonjs/inspector";
 import { useEditorStore } from "@/stores/editor.store";
 import type { Design, Terrain } from "@/model/model";
 import { startIndoorEditor } from "@/editor/indoorEditor";
@@ -50,11 +49,14 @@ export let sizeI: number, sizeJ: number;
 export let camera: ArcRotateCamera;
 export let scene: Scene;
 
-export const createScene = (editorCanvas: HTMLCanvasElement, view?: string) => {
+export const createScene = async (
+  editorCanvas: HTMLCanvasElement,
+  view?: string
+) => {
   let design: Design | undefined;
   let terrain: Terrain | undefined;
 
-  if (view) design = getDesign(view);
+  if (view) design = await getDesign(view);
 
   if (design) {
     terrain = design.terrain;

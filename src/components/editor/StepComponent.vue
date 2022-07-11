@@ -32,7 +32,6 @@ function getClasses(i: number) {
   display: flex;
   justify-content: space-evenly;
   height: 50px;
-  border-top: 2px solid #d2d2d2;
 }
 
 .step {

@@ -1,3 +1,2 @@
-import { ExecuteCodeAction, Mesh, StandardMaterial, Vector3, } from "@babylonjs/core";
-import { Control } from "@babylonjs/gui";
+export {};
 //# sourceMappingURL=model.js.map

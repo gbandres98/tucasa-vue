@@ -37,17 +37,6 @@ const onChange = async (option: Option, index: number) => {
   margin-top: 50px;
   display: flex;
   flex-direction: column;
-}
-
-.option-info {
-  display: flex;
-  align-items: center;
   gap: 20px;
-  cursor: pointer;
-  font-size: 1.25rem;
-}
-
-.value-number {
-  margin-left: auto;
 }
 </style>

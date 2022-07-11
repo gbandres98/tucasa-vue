@@ -7,16 +7,33 @@
       </div>
     </RouterLink>
     <div class="links">
-      <RouterLink class="animated-link" to="/casas" v-if="isUser"
-        >Sobre nosotros</RouterLink
+      <RouterLink
+        class="menu-link animated-link"
+        to="/backoffice"
+        v-if="!isUser"
+        >Proyectos</RouterLink
       >
-      <RouterLink class="animated-link" to="/editor" v-if="isUser"
-        >Casos de éxito</RouterLink
+      <RouterLink
+        class="menu-link animated-link"
+        to="/backoffice/opciones"
+        v-if="!isUser"
+        >Opciones</RouterLink
       >
-      <RouterLink to="/backoffice" v-if="!isUser">Proyectos</RouterLink>
-      <RouterLink to="/backoffice/opciones" v-if="!isUser">Opciones</RouterLink>
+      <RouterLink
+        class="menu-link animated-link"
+        to="/backoffice/opciones"
+        v-if="!isUser"
+        >Terrenos</RouterLink
+      >
+      <RouterLink
+        class="menu-link animated-link"
+        to="/backoffice/opciones"
+        v-if="!isUser"
+        >Admin</RouterLink
+      >
     </div>
-    <UserBarComponent class="user-bar" />
+    <button class="button-primary" v-if="isAnon">Diseña tu casa</button>
+    <UserBarComponent :class="{ 'user-bar': true, logged: role }" />
   </div>
 </template>
 
@@ -30,16 +47,30 @@ import { computed } from "vue";
 const { role } = storeToRefs(useAuthStore());
 
 const isUser = computed(() => !role.value || role.value === "USER");
+const isAnon = computed(() => !role.value);
 </script>
 
 <style scoped>
+button {
+  margin-left: auto;
+}
+
+.menu-link {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.menu-link:hover {
+  font-weight: 800;
+}
+
 .header {
   box-sizing: border-box;
-  height: 60px;
-  padding: 10px 20px;
+  height: 62px;
+  padding: 10px 100px;
   display: flex;
-  max-width: 1600px;
-  margin: 0 auto;
+  background-color: white;
+  border-bottom: 2px solid #d2d2d2;
 }
 
 .header div {
@@ -50,9 +81,10 @@ const isUser = computed(() => !role.value || role.value === "USER");
   display: flex;
   align-items: baseline;
   font-weight: 600;
-  font-size: 1.7rem;
+  font-size: 2rem;
   text-decoration: none;
   margin-bottom: 4px;
+  margin-right: 40px;
 }
 
 .title img {
@@ -64,11 +96,16 @@ const isUser = computed(() => !role.value || role.value === "USER");
   display: flex;
   align-items: end;
   justify-content: space-between;
-  width: 15rem;
-  margin-left: 40px;
+  gap: 50px;
+  margin-left: 10%;
 }
 
 .user-bar {
+  margin-left: 50px;
+  margin-right: 10px;
+}
+
+.user-bar.logged {
   margin-left: auto;
   margin-right: 10px;
 }

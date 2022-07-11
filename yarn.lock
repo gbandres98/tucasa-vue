@@ -1728,6 +1728,11 @@
   "resolved" "https://registry.npmjs.org/isexe/-/isexe-2.0.0.tgz"
   "version" "2.0.0"
 
+"js-md5@^0.7.3":
+  "integrity" "sha512-ZC41vPSTLKGwIRjqDh8DfXoCrdQIyBgspJVPXHBGu4nZlAEvG3nf+jO9avM9RmLiGakg7vz974ms99nEV0tmTQ=="
+  "resolved" "https://registry.npmjs.org/js-md5/-/js-md5-0.7.3.tgz"
+  "version" "0.7.3"
+
 "js-yaml@^4.1.0":
   "integrity" "sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA=="
   "resolved" "https://registry.npmjs.org/js-yaml/-/js-yaml-4.1.0.tgz"
@@ -1823,6 +1828,11 @@
   "version" "0.25.9"
   dependencies:
     "sourcemap-codec" "^1.4.8"
+
+"md5-typescript@^1.0.5":
+  "integrity" "sha512-ovAc4EtiNt2dY8JPhPr/wkC9h4U5k/nuClNVcG0Ga3V1rMlYpAY24ZaaymFXJlz+ccJ6UMPo3FSaVKe7czBsXw=="
+  "resolved" "https://registry.npmjs.org/md5-typescript/-/md5-typescript-1.0.5.tgz"
+  "version" "1.0.5"
 
 "memorystream@^0.3.1":
   "integrity" "sha512-S3UwM3yj5mtUSEfP41UZmt/0SCoVYUcU1rkXv+BQ5Ig8ndL4sPoJNBUJERafdPb5jjHJGuMgytgKvKIf58XNBw=="

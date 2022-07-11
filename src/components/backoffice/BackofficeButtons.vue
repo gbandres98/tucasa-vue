@@ -40,4 +40,8 @@ const emit = defineEmits<{
 }>();
 </script>
 
-<style scoped></style>
+<style scoped>
+svg {
+  cursor: pointer;
+}
+</style>

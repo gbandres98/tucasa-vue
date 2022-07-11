@@ -11,7 +11,9 @@ import {
   faCouch,
   faPenToSquare,
   faCheck,
+  faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { faClock, faComment } from "@fortawesome/free-regular-svg-icons";
 
 import App from "./App.vue";
 import router from "./router";
@@ -27,7 +29,10 @@ library.add(
   faDoorClosed,
   faCouch,
   faPenToSquare,
-  faCheck
+  faCheck,
+  faPlus,
+  faClock,
+  faComment
 );
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

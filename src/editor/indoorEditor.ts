@@ -25,7 +25,6 @@ import {
   lowerCornerToCenter,
 } from "@/editor/util";
 import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
 import { switchToIndoorUI } from "@/editor/ui";
 import {
   floorMaterial,

@@ -65,11 +65,12 @@ const selectValue = (e: any) => {
 }
 
 .values {
-  margin-top: 50px;
   display: flex;
-  width: 100%;
-  padding: 0 50px;
+  width: 340px;
+  padding-bottom: 30px;
+  margin: 20px 30px 0 30px;
   flex-direction: column;
+  border-bottom: 1px solid var(--primary);
 }
 
 .value {

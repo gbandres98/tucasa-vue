@@ -1,15 +1,12 @@
 <template>
   <div>
     <div class="user-bar" v-if="!user">
-      <a class="animated-link" @click="loginModalOpen = true">Inicia sesión</a>
-      <a class="animated-link" @click="signupModalOpen = true">Únete</a>
+      <a class="animated-link" @click="loginModalOpen = true"
+        >Acceso clientes</a
+      >
       <LoginModal
         :open="loginModalOpen"
         @loginModalClose="loginModalOpen = false"
-      />
-      <SignupModal
-        :open="signupModalOpen"
-        @signupModalClose="signupModalOpen = false"
       />
     </div>
     <div class="user-bar" v-if="user">
@@ -37,7 +34,8 @@ const signupModalOpen = ref(false);
 <style scoped>
 .user-bar {
   display: flex;
-  align-items: end;
+  align-items: center;
+  font-size: 1.2rem;
 }
 
 .user-bar a {

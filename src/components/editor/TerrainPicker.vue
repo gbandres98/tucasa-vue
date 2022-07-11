@@ -3,7 +3,7 @@
     <div class="terrain-picker">
       <h1>Elige un lugar:</h1>
       <TerrainShowcase @continue="onContinue" />
-      <h1>¿Ya tienes un terreno?</h1>
+      <h1>¿Ya tienes una parcela?</h1>
       <span>Danos los detalles de tu terreno y contruiremos tu casa en él</span>
       <form class="form" @submit.prevent="onFormSubmit">
         <label class="size-label">Tamaño edificable:</label>

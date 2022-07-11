@@ -3,7 +3,6 @@ import { ArcRotateCamera, Matrix, Mesh, MeshBuilder, Plane, PointerEventTypes, P
 import { deleteContainer, MAX_FLOOR } from "@/editor/container";
 import { areasOverlap, getContainerArea, isPointInArea, lowerCornerToCenter, } from "@/editor/util";
 import "@babylonjs/core/Debug/debugLayer";
-import "@babylonjs/inspector";
 import { switchToIndoorUI } from "@/editor/ui";
 import { floorMaterial, initializeMaterials, wallErrorMaterial, wallGhostMaterial, wallMaterial, } from "@/editor/materials";
 import { startFurniturePlacement } from "@/editor/furniture";

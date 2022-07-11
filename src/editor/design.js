@@ -1,10 +1,17 @@
 import { Area } from "@/editor/grid";
-import { startIndoorEditor } from "@/editor/indoorEditor";
-export const getDesign = (id) => {
-    const designJson = localStorage.getItem("design");
-    if (!designJson)
-        return;
-    const design = JSON.parse(designJson);
+import { getProject } from "@/client/project";
+export const getDesign = async (id) => {
+    let design;
+    if (id === "local") {
+        const designJson = localStorage.getItem("design");
+        if (!designJson)
+            return;
+        design = JSON.parse(designJson);
+    }
+    else {
+        const project = await getProject(id.toString());
+        design = project.design;
+    }
     processDesign(design);
     return design;
 };

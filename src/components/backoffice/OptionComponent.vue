@@ -1,36 +1,44 @@
 <template>
-  <div class="option">
-    <div class="option-title" @click="open = !open">
+  <div :class="{ option: true }">
+    <div :class="{ 'option-title': true, open: open }">
       <font-awesome-icon
         :class="{ 'list-icon': true, open: open }"
         icon="angle-up"
       />
-      <span class="option-name" v-if="!editing">{{ option.name }}</span>
+      <span class="option-name" v-if="!editing" @click="open = !open">{{
+        option.name
+      }}</span>
       <input type="text" v-if="editing" v-model="optionCopy.name" />
       <span class="option-value-no">{{
         `(${optionCopy.values.length} opciones)`
       }}</span>
       <BackofficeButtons
+        class="buttons"
         :editing="editing"
         @edit="editing = true"
         @accept="accept"
         @cancel="cancel"
       />
     </div>
-    <div class="option-values">
-      <div class="value" v-for="value in optionCopy.values" :key="value.name">
-        <span class="value-name">{{ value.name }}</span>
-        <span class="value-description">{{ value.description }}</span>
-        <span>{{ value.price }}</span>
-      </div>
+    <div :class="{ 'option-values': true, open: open }">
+      <ValueComponent
+        class="option-value"
+        v-for="(value, i) in optionCopy.values"
+        :key="value.name"
+        :value="value"
+        @change="onValueChange($event, i)"
+      />
+      <!--      <font-awesome-icon class="plus-icon" icon="plus" />-->
+      <button class="button-small">Añadir</button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type { Option } from "@/model/model";
+import type { Option, Value } from "@/model/model";
 import { ref } from "vue";
 import BackofficeButtons from "@/components/backoffice/BackofficeButtons.vue";
+import ValueComponent from "@/components/backoffice/ValueComponent.vue";
 
 const props = defineProps<{
   option: Option;
@@ -52,6 +60,11 @@ const cancel = () => {
   optionCopy.value = Object.assign({}, props.option);
   editing.value = false;
 };
+
+const onValueChange = (value: Value, index: number) => {
+  optionCopy.value.values[index] = value;
+  emit("change", optionCopy.value);
+};
 </script>
 
 <style scoped>
@@ -60,7 +73,17 @@ input {
 }
 
 .option {
-  width: 600px;
+  width: 100%;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--primary);
+}
+
+.option-title:hover {
+  background-color: var(--primary-light-1);
+}
+
+.option-title.open {
+  background-color: var(--primary-light-1);
 }
 
 .option-title {
@@ -68,7 +91,10 @@ input {
   gap: 20px;
   font-size: 1.25rem;
   align-items: center;
-  cursor: pointer;
+  transition: 0.5s;
+  background-color: white;
+  border-radius: 2px;
+  padding: 5px 10px;
 }
 
 .list-icon {
@@ -80,16 +106,43 @@ input {
   transform: rotate(0deg);
 }
 
-.value {
-  display: flex;
-  justify-content: space-between;
+.option-values {
+  max-height: 0;
+  overflow-y: hidden;
+  transition: 0.5s;
 }
 
-.value-name {
-  flex: 0 0 100px;
+.option-values.open {
+  max-height: 100vh;
 }
 
-.value-description {
-  flex: 0 0 300px;
+.buttons {
+  margin-left: auto;
+}
+
+.option-value-no {
+  font-size: 0.9rem;
+  color: #999999;
+}
+
+.option-value:last-of-type {
+  border-bottom: none;
+}
+
+.option-value {
+  border-bottom: 1px solid var(--primary-light-1);
+}
+
+.option-name {
+  cursor: pointer;
+}
+
+.plus-icon {
+  display: block;
+  margin: 0 auto;
+}
+
+.button-small {
+  margin-left: 10px;
 }
 </style>

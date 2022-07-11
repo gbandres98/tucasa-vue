@@ -79,7 +79,7 @@ async function submit() {
   }
 
   try {
-    await authStore.register(email.value, password1.value, phone.value);
+    await authStore.register(email.value, password1.value);
 
     emit("signupModalClose");
   } catch (e: unknown) {

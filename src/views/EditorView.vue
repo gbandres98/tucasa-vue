@@ -3,7 +3,9 @@
     <StepComponent />
     <TerrainPicker v-if="step === 1" />
     <ToolBarComponent v-if="step === 2 || step === 3" />
-    <EditorComponent v-if="step === 2 || step === 3" />
+    <div class="editor">
+      <EditorComponent v-if="step === 2 || step === 3" />
+    </div>
     <PriceComponent v-if="step === 2 || step === 3 || step === 4" />
     <ConfigComponent v-if="step === 4" />
   </div>
@@ -25,5 +27,9 @@ const { step } = storeToRefs(useEditorStore());
 <style scoped>
 .editor-wrapper {
   position: relative;
+}
+
+.editor {
+  height: calc(100vh - 207px);
 }
 </style>

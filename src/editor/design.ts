@@ -1,13 +1,21 @@
 import type { Design } from "@/model/model";
 import { Area } from "@/editor/grid";
-import { startIndoorEditor } from "@/editor/indoorEditor";
+import { getProject } from "@/client/project";
 
-export const getDesign = (id: string): Design | undefined => {
-  const designJson = localStorage.getItem("design");
+export const getDesign = async (id: string) => {
+  let design: Design;
 
-  if (!designJson) return;
+  if (id === "local") {
+    const designJson = localStorage.getItem("design");
 
-  const design = JSON.parse(designJson) as Design;
+    if (!designJson) return;
+
+    design = JSON.parse(designJson) as Design;
+  } else {
+    const project = await getProject(id.toString());
+    design = project.design;
+  }
+
   processDesign(design);
 
   return design;
