@@ -4,38 +4,13 @@
       <h3>{{ column.name }}</h3>
       <Draggable
         class="card-list"
-        v-model="column.homes"
+        v-model="column.projects"
         group="cards"
         itemKey="id"
         ghost-class="ghost"
       >
         <template #item="{ element }">
-          <div class="card">
-            <div class="card-id">
-              <img class="logo" :src="logo" alt="tucasa logo" />
-              <span>{{ `#${element.id.toString().padStart(3, "0")}` }}</span>
-              <font-awesome-icon class="clock-icon" :icon="['far', 'clock']" />
-              <span class="card-time">{{
-                element.lastModified.toRelative({ locale: "ES" })
-              }}</span>
-            </div>
-            <div class="card-name">
-              {{
-                `${element.client.name} ${element.client.surname.charAt(0)}.`
-              }}
-            </div>
-            <div class="card-bottom">
-              <font-awesome-icon
-                class="message-icon"
-                :icon="['far', 'comment']"
-              />
-              <span>3</span>
-              <ProfilePic
-                class="profile-pic"
-                :email="element.assigned ? element.assigned.email : ''"
-              />
-            </div>
-          </div>
+          <ProjectCard :project="element" />
         </template>
       </Draggable>
     </div>
@@ -46,60 +21,60 @@
 import { onMounted, ref } from "vue";
 import type { HomeStatus, Project } from "@/model/model";
 import Draggable from "vuedraggable";
-import logo from "@/assets/logo.svg";
-import ProfilePic from "@/components/ProfilePic.vue";
+import { getProjects } from "@/client/project";
+import ProjectCard from "@/components/backoffice/ProjectCard.vue";
 
 type Column = {
   status: HomeStatus;
   name: string;
-  homes: Array<Project>;
+  projects: Array<Project>;
 };
 
 const columns = ref([
   {
     status: "NEW",
     name: "Nuevo",
-    homes: [],
+    projects: [],
   },
   {
     status: "ASSIGNED",
     name: "Asignado",
-    homes: [],
+    projects: [],
   },
   {
     status: "IN_PROGRESS",
     name: "En progreso",
-    homes: [],
+    projects: [],
   },
   {
     status: "WAITING",
     name: "Necesita atención",
-    homes: [],
+    projects: [],
   },
 ] as Column[]);
 
-// onMounted(async () => {
-//   const homes = await getHomes();
-//
-//   homes.forEach((home) => {
-//     switch (home.status) {
-//       case "NEW":
-//         columns.value[0].homes.push(home);
-//         return;
-//       case "ASSIGNED":
-//         columns.value[1].homes.push(home);
-//         return;
-//       case "IN_PROGRESS":
-//         columns.value[2].homes.push(home);
-//         return;
-//       case "WAITING":
-//         columns.value[3].homes.push(home);
-//         return;
-//       default:
-//         return;
-//     }
-//   });
-// });
+onMounted(async () => {
+  const projects = await getProjects();
+
+  projects.forEach((project) => {
+    switch (project.status) {
+      case "NEW":
+        columns.value[0].projects.push(project);
+        return;
+      case "ASSIGNED":
+        columns.value[1].projects.push(project);
+        return;
+      case "IN_PROGRESS":
+        columns.value[2].projects.push(project);
+        return;
+      case "WAITING":
+        columns.value[3].projects.push(project);
+        return;
+      default:
+        return;
+    }
+  });
+});
 </script>
 
 <style scoped>
@@ -126,56 +101,5 @@ const columns = ref([
   flex-direction: column;
   gap: 10px;
   height: 100%;
-}
-
-.card {
-  cursor: grab;
-  background-color: white;
-  border-radius: 1px;
-  padding: 10px;
-}
-
-.card.ghost {
-  background-color: rgba(255, 255, 255, 0.6);
-}
-
-.logo {
-  height: 20px;
-}
-
-.card-id {
-  border-bottom: 2px solid var(--primary-light-1);
-  display: flex;
-  align-items: baseline;
-  padding-bottom: 5px;
-}
-
-.clock-icon {
-  margin-left: auto;
-  color: var(--primary);
-  margin-right: 10px;
-}
-
-.card-time {
-  align-self: center;
-}
-
-.card-bottom {
-  margin-top: -20px;
-  display: flex;
-  align-items: baseline;
-}
-
-.card-name {
-  margin: 10px 0;
-}
-
-.message-icon {
-  margin-right: 5px;
-  font-size: 0.8rem;
-}
-
-.profile-pic {
-  margin-left: auto;
 }
 </style>

@@ -1,11 +1,12 @@
 <template>
-  <div :class="{ option: true }">
-    <div :class="{ 'option-title': true, open: open }">
+  <div class="bo-element">
+    <div :class="{ 'bo-element-title': true, open: open }">
       <font-awesome-icon
-        :class="{ 'list-icon': true, open: open }"
+        :class="{ 'bo-element-icon': true, open: open }"
         icon="angle-up"
+        @click="open = !open"
       />
-      <span class="option-name" v-if="!editing" @click="open = !open">{{
+      <span class="bo-element-name" v-if="!editing" @click="open = !open">{{
         option.name
       }}</span>
       <input type="text" v-if="editing" v-model="optionCopy.name" />
@@ -16,6 +17,7 @@
         class="buttons"
         :editing="editing"
         @edit="editing = true"
+        @delete="emit('delete', option.id)"
         @accept="accept"
         @cancel="cancel"
       />
@@ -45,6 +47,7 @@ const props = defineProps<{
 }>();
 const emit = defineEmits<{
   (e: "change", v: Option): void;
+  (e: "delete", id: string): void;
 }>();
 
 const optionCopy = ref(Object.assign({}, props.option));
@@ -72,40 +75,6 @@ input {
   width: 50%;
 }
 
-.option {
-  width: 100%;
-  padding-bottom: 10px;
-  border-bottom: 1.5px solid var(--primary);
-}
-
-.option-title:hover {
-  background-color: var(--primary-light-1);
-}
-
-.option-title.open {
-  background-color: var(--primary-light-1);
-}
-
-.option-title {
-  display: flex;
-  gap: 20px;
-  font-size: 1.25rem;
-  align-items: center;
-  transition: 0.5s;
-  background-color: white;
-  border-radius: 2px;
-  padding: 5px 10px;
-}
-
-.list-icon {
-  transform: rotate(90deg);
-  transition: 0.5s;
-}
-
-.list-icon.open {
-  transform: rotate(0deg);
-}
-
 .option-values {
   max-height: 0;
   overflow-y: hidden;
@@ -131,10 +100,6 @@ input {
 
 .option-value {
   border-bottom: 1px solid var(--primary-light-1);
-}
-
-.option-name {
-  cursor: pointer;
 }
 
 .plus-icon {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="user-bar" v-if="!user">
+    <div class="user-bar" v-show="!user">
       <a class="animated-link" @click="loginModalOpen = true"
         >Acceso clientes</a
       >

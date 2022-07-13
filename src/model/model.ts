@@ -15,6 +15,7 @@ export type City = {
 };
 
 export type Terrain = {
+  id: string;
   sizeX: number;
   sizeY: number;
   price: number;
@@ -61,6 +62,11 @@ export type Option = {
   filled: boolean;
 };
 
+export type OptionChosen = {
+  name: string;
+  value: Value | undefined;
+};
+
 export type Design = {
   terrain: Terrain;
   containers: Array<IndoorContainerData>;
@@ -93,6 +99,18 @@ export type Project = {
   assigned: Staff | undefined;
   status: HomeStatus;
   lastModified: DateTime;
+  options: Array<OptionChosen>;
+};
+
+export type ProjectDTO = {
+  id: number;
+  design: Design;
+  payment: PaymentInfo;
+  client: ClientInfo;
+  assigned: Staff | undefined;
+  status: HomeStatus;
+  lastModified: number;
+  options: Array<OptionChosen>;
 };
 
 export type Message = {

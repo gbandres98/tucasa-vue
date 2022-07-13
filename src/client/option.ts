@@ -1,4 +1,11 @@
-import { collection, getDocs, setDoc, doc, addDoc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  setDoc,
+  doc,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
 import { firestore } from "@/firebase/firebase";
 import type { Option } from "@/model/model";
 
@@ -21,4 +28,8 @@ export const saveOption = async (option: Option) => {
 
   const optionsCollection = collection(firestore, "options");
   return addDoc(optionsCollection, option);
+};
+
+export const deleteOption = async (id: string) => {
+  return deleteDoc(doc(firestore, "options", id));
 };

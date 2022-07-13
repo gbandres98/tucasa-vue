@@ -24,6 +24,11 @@ const router = createRouter({
       component: () => import("@/views/backoffice/OptionsView.vue"),
     },
     {
+      path: "/backoffice/terrenos",
+      name: "terrenos",
+      component: () => import("@/views/backoffice/TerrainsView.vue"),
+    },
+    {
       path: "/backoffice",
       name: "backoffice",
       component: () => import("@/views/backoffice/HomesView.vue"),

@@ -1,4 +1,9 @@
-import type { ClientInfo, PaymentInfo, Project } from "@/model/model";
+import type {
+  ClientInfo,
+  PaymentInfo,
+  Project,
+  ProjectDTO,
+} from "@/model/model";
 import { generateDesign } from "@/editor/util";
 import { DateTime } from "luxon";
 import { httpsCallable } from "firebase/functions";
@@ -13,25 +18,34 @@ import {
   query,
   where,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import type { User } from "firebase/auth";
+import { useEditorStore } from "@/stores/editor.store";
 
 export const createProject = async (
   paymentInfo: PaymentInfo,
   client: ClientInfo,
   password: string
 ) => {
-  const project: Project = {
+  const project: ProjectDTO = {
     id: -1,
     design: generateDesign(),
     payment: paymentInfo,
     client: client,
     assigned: undefined,
     status: "NEW",
-    lastModified: DateTime.now(),
+    lastModified: DateTime.now().toMillis(),
+    options: useEditorStore().options.map((option) => ({
+      name: option.name,
+      value: option.values.find((value) => value.selected),
+    })),
   };
 
-  const saveProject = httpsCallable<Project, Project>(functions, "saveProject");
+  const saveProject = httpsCallable<ProjectDTO, ProjectDTO>(
+    functions,
+    "saveProject"
+  );
 
   try {
     const res = await saveProject(project);
@@ -75,5 +89,31 @@ export const getUserProject = async (user: User | null) => {
 export const getProject = async (id: string) => {
   const snap = await getDoc(doc(firestore, "projects", id));
 
-  return snap.data() as Project;
+  const data = snap.data() as ProjectDTO;
+
+  return Object.assign(data, {
+    lastModified: DateTime.fromMillis(data.lastModified),
+  }) as Project;
+};
+
+export const getProjects = async (): Promise<Array<Project>> => {
+  const projectCollection = collection(firestore, "projects");
+
+  const snap = await getDocs(projectCollection);
+
+  return snap.docs.map((doc) => {
+    const project = doc.data() as ProjectDTO;
+
+    return Object.assign(project, {
+      lastModified: DateTime.fromMillis(project.lastModified),
+    });
+  });
+};
+
+export const updateProjectModified = (projectId: string) => {
+  const docRef = doc(firestore, "projects", projectId);
+
+  updateDoc(docRef, {
+    lastModified: DateTime.now().toMillis(),
+  });
 };

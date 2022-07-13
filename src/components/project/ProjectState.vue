@@ -60,7 +60,6 @@ const statusUserText = computed(() => {
 
 .status-text {
   margin-top: 10px;
-  width: 400px;
   background-color: var(--primary-light-1);
   padding: 10px;
   border-radius: 5px;

@@ -21,7 +21,7 @@
       >
       <RouterLink
         class="menu-link animated-link"
-        to="/backoffice/opciones"
+        to="/backoffice/terrenos"
         v-if="!isUser"
         >Terrenos</RouterLink
       >
@@ -32,7 +32,16 @@
         >Admin</RouterLink
       >
     </div>
-    <button class="button-primary" v-if="isAnon">Diseña tu casa</button>
+    <RouterLink to="/editor" custom v-slot="{ navigate }"
+      ><button
+        class="button-primary"
+        @click="navigate"
+        @keypress.enter="navigate"
+        v-if="isAnon"
+      >
+        Diseña tu casa
+      </button></RouterLink
+    >
     <UserBarComponent :class="{ 'user-bar': true, logged: role }" />
   </div>
 </template>

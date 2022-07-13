@@ -12,6 +12,7 @@ import {
   faPenToSquare,
   faCheck,
   faPlus,
+  faPaperPlane,
 } from "@fortawesome/free-solid-svg-icons";
 import { faClock, faComment } from "@fortawesome/free-regular-svg-icons";
 
@@ -32,7 +33,8 @@ library.add(
   faCheck,
   faPlus,
   faClock,
-  faComment
+  faComment,
+  faPaperPlane
 );
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

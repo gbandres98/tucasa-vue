@@ -5,7 +5,8 @@ import { firestore, functions } from "@/firebase/firebase";
 import { useAuthStore } from "@/stores/auth.store";
 import { FirebaseError } from "firebase/app";
 import router from "@/router";
-import { collection, doc, getDocs, query, where, getDoc, } from "firebase/firestore";
+import { collection, doc, getDocs, query, where, getDoc, updateDoc, } from "firebase/firestore";
+import { useEditorStore } from "@/stores/editor.store";
 export const createProject = async (paymentInfo, client, password) => {
     const project = {
         id: -1,
@@ -14,7 +15,11 @@ export const createProject = async (paymentInfo, client, password) => {
         client: client,
         assigned: undefined,
         status: "NEW",
-        lastModified: DateTime.now(),
+        lastModified: DateTime.now().toMillis(),
+        options: useEditorStore().options.map((option) => ({
+            name: option.name,
+            value: option.values.find((value) => value.selected),
+        })),
     };
     const saveProject = httpsCallable(functions, "saveProject");
     try {
@@ -52,8 +57,26 @@ export const getUserProject = async (user) => {
     return parseInt(snap.docs[0].id);
 };
 export const getProject = async (id) => {
-    console.log(id);
     const snap = await getDoc(doc(firestore, "projects", id));
-    return snap.data();
+    const data = snap.data();
+    return Object.assign(data, {
+        lastModified: DateTime.fromMillis(data.lastModified),
+    });
+};
+export const getProjects = async () => {
+    const projectCollection = collection(firestore, "projects");
+    const snap = await getDocs(projectCollection);
+    return snap.docs.map((doc) => {
+        const project = doc.data();
+        return Object.assign(project, {
+            lastModified: DateTime.fromMillis(project.lastModified),
+        });
+    });
+};
+export const updateProjectModified = (projectId) => {
+    const docRef = doc(firestore, "projects", projectId);
+    updateDoc(docRef, {
+        lastModified: DateTime.now().toMillis(),
+    });
 };
 //# sourceMappingURL=project.js.map

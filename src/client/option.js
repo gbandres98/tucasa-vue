@@ -1,4 +1,4 @@
-import { collection, getDocs, setDoc, doc, addDoc } from "firebase/firestore";
+import { collection, getDocs, setDoc, doc, addDoc, deleteDoc, } from "firebase/firestore";
 import { firestore } from "@/firebase/firebase";
 export const getOptions = async () => {
     const optionsCollection = collection(firestore, "options");
@@ -15,5 +15,8 @@ export const saveOption = async (option) => {
     }
     const optionsCollection = collection(firestore, "options");
     return addDoc(optionsCollection, option);
+};
+export const deleteOption = async (id) => {
+    return deleteDoc(doc(firestore, "options", id));
 };
 //# sourceMappingURL=option.js.map

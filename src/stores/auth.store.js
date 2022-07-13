@@ -19,6 +19,7 @@ export const useAuthStore = defineStore({
         },
         logout() {
             signOut(auth);
+            router.push("/");
         },
     },
 });
@@ -28,8 +29,16 @@ onAuthStateChanged(auth, (user) => {
         auth.currentUser?.getIdTokenResult().then((idTokenResult) => {
             const role = idTokenResult.claims.role;
             useAuthStore().role = role;
-            // if (role === "STAFF" || role === "ADMIN") router.push("/backoffice");
+            if ((role === "STAFF" || role === "ADMIN") &&
+                !router.currentRoute.value.fullPath.includes("backoffice"))
+                router.push("/backoffice");
+            if (role === "USER" &&
+                !router.currentRoute.value.fullPath.includes("micasa"))
+                router.push("/micasa");
         });
+    }
+    else {
+        useAuthStore().role = undefined;
     }
 });
 //# sourceMappingURL=auth.store.js.map

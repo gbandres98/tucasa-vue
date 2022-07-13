@@ -1,0 +1,50 @@
+.bo-list {
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.bo-element {
+    width: 100%;
+    padding-bottom: 10px;
+    border-bottom: 1.5px solid var(--primary);
+}
+
+.bo-element-title {
+    display: flex;
+    gap: 20px;
+    font-size: 1.25rem;
+    align-items: center;
+    transition: 0.5s;
+    background-color: white;
+    border-radius: 2px;
+    padding: 5px 10px;
+}
+
+.bo-element-title:hover {
+    background-color: var(--primary-light-1);
+}
+
+.bo-element-title.open {
+    background-color: var(--primary-light-1);
+}
+
+.bo-element-icon {
+    transform: rotate(90deg);
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.bo-element-icon.open {
+    transform: rotate(0deg);
+}
+
+.bo-element-name {
+    cursor: pointer;
+}
+
+.bo-label {
+    font-size: 0.8rem;
+    font-weight: 800;
+}

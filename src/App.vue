@@ -12,4 +12,5 @@ import HeaderComponent from "@/components/HeaderComponent.vue";
 <style>
 @import "@/assets/base.css";
 @import "@/assets/color.css";
+@import "@/assets/backoffice.css";
 </style>
