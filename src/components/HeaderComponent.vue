@@ -27,7 +27,7 @@
       >
       <RouterLink
         class="menu-link animated-link"
-        to="/backoffice/opciones"
+        to="/backoffice/staff"
         v-if="!isUser"
         >Admin</RouterLink
       >

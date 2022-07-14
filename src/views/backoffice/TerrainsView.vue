@@ -1,6 +1,6 @@
 <template>
   <div class="backoffice-panel-wrapper">
-    <h1>Gestionar terrenos</h1>
+    <h1>Terrenos</h1>
     <div class="bo-list">
       <TerrainComponent
         v-for="terrain in terrains"

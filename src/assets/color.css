@@ -1,4 +1,10 @@
 :root {
     --primary: #c68f59;
     --primary-light-1: #c68f593b;
+
+    --secondary: #59C68F;
+    --secondary-light-1: #59C68F3b;
+
+    --accent: #8F59C6;
+    --accent-light-1: #8F59C63b;
 }

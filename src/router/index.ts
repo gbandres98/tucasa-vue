@@ -29,6 +29,11 @@ const router = createRouter({
       component: () => import("@/views/backoffice/TerrainsView.vue"),
     },
     {
+      path: "/backoffice/staff",
+      name: "staff",
+      component: () => import("@/views/backoffice/StaffView.vue"),
+    },
+    {
       path: "/backoffice",
       name: "backoffice",
       component: () => import("@/views/backoffice/HomesView.vue"),

@@ -1,6 +1,10 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
+import {
+  sendPasswordResetEmail,
+  getAuth as getClientAuth,
+} from "firebase/auth";
 import { firestore } from "firebase-admin";
 
 admin.initializeApp();
@@ -50,4 +54,51 @@ export const saveProject = functions
     await projectCollection.doc(project.id.toString()).set(project);
 
     return project;
+  });
+
+type StaffRequest = {
+  email: string;
+  role: "USER" | "STAFF" | "ADMIN";
+};
+
+export const setRole = functions
+  .region("europe-west3")
+  .https.onCall(async (data) => {
+    const req = data as StaffRequest;
+
+    const user = await getAuth().getUserByEmail(req.email);
+
+    if (user) {
+      const customClaims = {
+        role: req.role,
+      };
+
+      try {
+        await getAuth().setCustomUserClaims(user.uid, customClaims);
+      } catch (e: unknown) {
+        console.log(e);
+      }
+    }
+  });
+
+export const createUser = functions
+  .region("europe-west3")
+  .https.onCall(async (data) => {
+    const req = data as StaffRequest;
+
+    try {
+      const user = await getAuth().createUser({
+        email: req.email,
+        emailVerified: true,
+        password: (Math.random() + 1).toString(36).substring(7),
+      });
+
+      sendPasswordResetEmail(getClientAuth(), req.email);
+
+      getAuth().setCustomUserClaims(user.uid, {
+        role: req.role,
+      });
+    } catch (e: unknown) {
+      console.log(e);
+    }
   });

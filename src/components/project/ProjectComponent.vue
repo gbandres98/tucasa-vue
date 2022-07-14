@@ -13,9 +13,7 @@
       <ContactComponent :client="project.client" />
     </div>
     <div class="col-2">
-      <span v-if="project.assigned"
-        >Encargado: <StaffComponent :staff="project.assigned"
-      /></span>
+      <span>Encargado: <StaffComponent :staff="project.assigned" /></span>
       <ProjectState class="project-status" :status="project.status" />
       <ChatComponent :project-id="projectId.toString()" class="chat" />
     </div>

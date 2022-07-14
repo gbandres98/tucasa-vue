@@ -46,7 +46,7 @@ onUnmounted(() => window.clearInterval(interval.value));
 .user .message-content {
   margin-left: auto;
   border-radius: 20px 0 20px 20px;
-  background-color: #59c6b23b;
+  background-color: var(--secondary-light-1);
 }
 
 .user .message-date {

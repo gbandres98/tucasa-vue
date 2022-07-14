@@ -89,6 +89,7 @@ export type ClientInfo = {
 export type Staff = {
   name: string;
   email: string;
+  admin: boolean;
 };
 
 export type Project = {
