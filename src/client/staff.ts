@@ -6,8 +6,10 @@ import {
   getDocs,
   setDoc,
 } from "firebase/firestore";
-import { firestore } from "@/firebase/firebase";
+import { auth, firestore, functions } from "@/firebase/firebase";
 import type { Staff } from "@/model/model";
+import { httpsCallable } from "firebase/functions";
+import { sendPasswordResetEmail } from "firebase/auth";
 
 export const getStaff = async () => {
   const staffCollection = collection(firestore, "staff");
@@ -18,10 +20,25 @@ export const getStaff = async () => {
 };
 
 export const createStaff = async (staff: Staff) => {
-  saveStaff(staff);
+  const createUser = httpsCallable(functions, "createUser");
+
+  await createUser({
+    email: staff.email,
+    role: staff.admin ? "ADMIN" : "STAFF",
+  });
+
+  sendPasswordResetEmail(auth, staff.email);
+  return setDoc(doc(firestore, "staff", staff.email), staff);
 };
 
 export const saveStaff = async (staff: Staff) => {
+  const setRole = httpsCallable(functions, "setRole");
+
+  setRole({
+    email: staff.email,
+    role: staff.admin ? "ADMIN" : "STAFF",
+  });
+
   return setDoc(doc(firestore, "staff", staff.email), staff);
 };
 

@@ -32,8 +32,7 @@ onAuthStateChanged(auth, (user) => {
             if ((role === "STAFF" || role === "ADMIN") &&
                 !router.currentRoute.value.fullPath.includes("backoffice"))
                 router.push("/backoffice");
-            if (role === "USER" &&
-                !router.currentRoute.value.fullPath.includes("micasa"))
+            else if (!router.currentRoute.value.fullPath.includes("micasa"))
                 router.push("/micasa");
         });
     }

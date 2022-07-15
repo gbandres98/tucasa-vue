@@ -16,7 +16,7 @@
         :staff="newStaff"
         v-if="creating"
         @cancel="creating = false"
-        @confirm="createStaff"
+        @confirm="onCreate"
       />
     </div>
   </div>
@@ -26,7 +26,7 @@
 import type { Ref } from "vue";
 import type { Staff } from "@/model/model";
 import { onMounted, ref } from "vue";
-import { deleteStaff, getStaff, saveStaff } from "@/client/staff";
+import { deleteStaff, getStaff, saveStaff, createStaff } from "@/client/staff";
 import StaffComponent from "@/components/backoffice/StaffComponent.vue";
 import NewStaffComponent from "@/components/backoffice/NewStaffComponent.vue";
 
@@ -54,9 +54,9 @@ const onDelete = async (email: string) => {
   updateStaffs();
 };
 
-const createStaff = async (staff: Staff) => {
+const onCreate = async (staff: Staff) => {
   creating.value = false;
-  await saveStaff(staff);
+  await createStaff(staff);
   updateStaffs();
 };
 </script>

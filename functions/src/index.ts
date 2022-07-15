@@ -1,30 +1,9 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import { getAuth } from "firebase-admin/auth";
-import {
-  sendPasswordResetEmail,
-  getAuth as getClientAuth,
-} from "firebase/auth";
 import { firestore } from "firebase-admin";
 
-admin.initializeApp();
-
-export const addRoleOnSignup = functions
-  .region("europe-west3")
-  .auth.user()
-  .onCreate(async (user) => {
-    if (!user.email) return;
-
-    const customClaims = {
-      role: "USER",
-    };
-
-    try {
-      await getAuth().setCustomUserClaims(user.uid, customClaims);
-    } catch (e: unknown) {
-      console.log(e);
-    }
-  });
+const app = admin.initializeApp();
 
 type IdEntity = {
   nextId: number;
@@ -66,7 +45,7 @@ export const setRole = functions
   .https.onCall(async (data) => {
     const req = data as StaffRequest;
 
-    const user = await getAuth().getUserByEmail(req.email);
+    const user = await getAuth(app).getUserByEmail(req.email);
 
     if (user) {
       const customClaims = {
@@ -79,6 +58,8 @@ export const setRole = functions
         console.log(e);
       }
     }
+
+    return user;
   });
 
 export const createUser = functions
@@ -87,18 +68,20 @@ export const createUser = functions
     const req = data as StaffRequest;
 
     try {
-      const user = await getAuth().createUser({
+      const user = await getAuth(app).createUser({
         email: req.email,
         emailVerified: true,
-        password: (Math.random() + 1).toString(36).substring(7),
+        password: (Math.random() + 1).toString(16).substring(2),
       });
 
-      sendPasswordResetEmail(getClientAuth(), req.email);
-
-      getAuth().setCustomUserClaims(user.uid, {
+      await getAuth().setCustomUserClaims(user.uid, {
         role: req.role,
       });
+
+      return user;
     } catch (e: unknown) {
       console.log(e);
+
+      throw e;
     }
   });

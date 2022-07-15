@@ -121,6 +121,7 @@ const onFormSubmit = () => {
   }
 
   const terrain: Terrain = {
+    id: "-1",
     address: address.value,
     postalCode: postalCode.value,
     province: province.value,

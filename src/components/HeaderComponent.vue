@@ -53,10 +53,10 @@ import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth.store";
 import { computed } from "vue";
 
-const { role } = storeToRefs(useAuthStore());
+const { role, user } = storeToRefs(useAuthStore());
 
 const isUser = computed(() => !role.value || role.value === "USER");
-const isAnon = computed(() => !role.value);
+const isAnon = computed(() => !user.value);
 </script>
 
 <style scoped>

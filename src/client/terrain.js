@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDocs, query, setDoc, where, } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDocs, setDoc, } from "firebase/firestore";
 import { firestore } from "@/firebase/firebase";
 export const getTerrains = async () => {
     const modelsCollection = collection(firestore, "terrains");
