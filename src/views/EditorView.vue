@@ -3,8 +3,8 @@
     <StepComponent />
     <TerrainPicker v-if="step === 1" />
     <ToolBarComponent v-if="step === 2 || step === 3" />
-    <div class="editor">
-      <EditorComponent v-if="step === 2 || step === 3" />
+    <div class="editor" v-if="step === 2 || step === 3">
+      <EditorComponent />
     </div>
     <PriceComponent v-if="step === 2 || step === 3 || step === 4" />
     <ConfigComponent v-if="step === 4" />

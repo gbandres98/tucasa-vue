@@ -38,4 +38,8 @@ onMounted(async () => {
   height: calc(100vh - 117px);
   overflow-y: scroll;
 }
+
+.editor-wrapper {
+  flex: 1 1 auto;
+}
 </style>

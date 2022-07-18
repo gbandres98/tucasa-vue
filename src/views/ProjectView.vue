@@ -30,7 +30,7 @@ onUnmounted(() => {
 
 <style scoped>
 .project {
-  max-width: 1400px;
+  max-width: 1700px;
   margin: 0 auto;
   padding: 50px 100px;
 }

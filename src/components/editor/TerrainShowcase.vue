@@ -10,7 +10,7 @@
         @click="selected = terrain"
       >
         <div class="terrain-data">
-          <span>{{ `${terrain.address}` }}</span>
+          <span class="terrain-title">{{ `${terrain.address}` }}</span>
           <span>{{
             `${terrain.postalCode} ${terrain.city && terrain.city.label}, ${
               terrain.city && terrain.province.label
@@ -42,7 +42,7 @@ const emit = defineEmits<{
 }>();
 
 const terrains: Ref<Array<Terrain>> = ref([]);
-const provinceFilter: Ref<Province> = ref({ code: "-1", label: "Filtro" });
+const provinceFilter: Ref<Province> = ref({ code: "-1", label: "Provincia" });
 const selected: Ref<Terrain | undefined> = ref(undefined);
 
 const provinces = computed(() => [
@@ -59,11 +59,7 @@ const terrainsFiltered = computed(() => {
 });
 
 onMounted(async () => {
-  const t = await getTerrains();
-  for (let i = 0; i < 6; i++) {
-    const n = Object.assign({ address: i }, t[0]);
-    terrains.value.push(n);
-  }
+  terrains.value = await getTerrains();
 });
 
 const onContinue = () => {
@@ -103,7 +99,7 @@ const onContinue = () => {
   display: flex;
   flex-direction: column;
   border-top-right-radius: 20px;
-  padding: 20px;
+  padding: 10px 20px;
   transition: 0.2s;
 }
 
@@ -122,5 +118,10 @@ const onContinue = () => {
 
 button {
   margin-top: 20px;
+}
+
+.terrain-title {
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 </style>

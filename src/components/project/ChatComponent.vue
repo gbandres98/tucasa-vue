@@ -56,7 +56,7 @@ onMounted(() => {
 });
 
 const send = () => {
-  sendMessage(props.projectId, text.value, useAuthStore().role !== "USER");
+  sendMessage(props.projectId, text.value, useAuthStore().role != undefined);
   text.value = "";
 };
 

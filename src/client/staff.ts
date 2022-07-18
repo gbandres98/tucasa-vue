@@ -43,5 +43,11 @@ export const saveStaff = async (staff: Staff) => {
 };
 
 export const deleteStaff = async (email: string) => {
+  const deleteUser = httpsCallable(functions, "deleteUser");
+
+  deleteUser({
+    email: email,
+  });
+
   return deleteDoc(doc(firestore, "staff", email));
 };

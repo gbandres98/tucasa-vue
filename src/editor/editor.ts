@@ -22,6 +22,7 @@ import {
 } from "@/editor/grid";
 import type { Container } from "@/editor/container";
 import {
+  correctPosition,
   createContainerMesh,
   isContainerColliding,
   isSupported,
@@ -53,6 +54,8 @@ export const createScene = async (
   editorCanvas: HTMLCanvasElement,
   view?: string
 ) => {
+  useEditorStore().loaded = false;
+
   let design: Design | undefined;
   let terrain: Terrain | undefined;
 
@@ -73,13 +76,13 @@ export const createScene = async (
   canvas = editorCanvas;
   engine = new Engine(canvas, true, { stencil: true });
   scene = new Scene(engine);
-  // scene.debugLayer.show();
+
+  createBackground(scene);
 
   new HemisphericLight("ambientLight", new Vector3(0.2, 1, -0.2), scene);
 
   initializeMaterials();
   createCamera();
-  createBackground(scene);
   createGrid(scene, sizeI, sizeJ);
 
   createUI();
@@ -207,6 +210,8 @@ const addContainerDragBehavior = (container: Container) => {
       container.sizeI,
       container.sizeJ
     );
+
+    correctPosition(container);
 
     highlightCells(getContainerArea(container));
 

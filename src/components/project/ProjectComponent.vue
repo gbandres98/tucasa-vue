@@ -49,7 +49,7 @@ onBeforeMount(
   gap: 20px;
 }
 .col-1 {
-  flex: 0 1 55%;
+  flex: 0 1 60%;
   display: flex;
   flex-direction: column;
   gap: 20px;

@@ -41,13 +41,25 @@
         @click="openDoorPicker"
       />
       <span class="tool-text">Puertas</span>
-      <FurniturePanel v-show="isDoorPickerActive" />
+      <FurniturePanel
+        v-show="isDoorPickerActive"
+        @picked="isDoorPickerActive = false"
+        type="door"
+      />
     </div>
-    <div v-if="step === 3" :class="{ tool: true, active: false }">
-      <div class="tool-icon">
+    <div
+      v-if="step === 3"
+      :class="{ tool: true, active: isWindowPickerActive }"
+    >
+      <div class="tool-icon" @click="openWindowPicker">
         <img :src="windowIcon" alt="añadir paredes" />
       </div>
       <span class="tool-text">Ventanas</span>
+      <FurniturePanel
+        v-show="isWindowPickerActive"
+        @picked="isWindowPickerActive = false"
+        type="window"
+      />
     </div>
     <div v-if="step === 3" :class="{ tool: true, active: false }">
       <font-awesome-icon class="tool-icon" icon="couch" />
@@ -102,6 +114,7 @@ const {
   isAddWallActive,
   isRemoveWallActive,
   isDoorPickerActive,
+  isWindowPickerActive,
 } = storeToRefs(useEditorStore());
 
 function addContainer() {
@@ -151,6 +164,12 @@ function nextStep() {
 
 function openDoorPicker() {
   isDoorPickerActive.value = !isDoorPickerActive.value;
+  isWindowPickerActive.value = false;
+}
+
+function openWindowPicker() {
+  isWindowPickerActive.value = !isWindowPickerActive.value;
+  isDoorPickerActive.value = false;
 }
 </script>
 

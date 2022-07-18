@@ -72,6 +72,7 @@ export type Design = {
   containers: Array<IndoorContainerData>;
   walls: Array<WallData>;
   furniture: Array<PlacedModel>;
+  options: Array<Option>;
 };
 
 export type PaymentInfo = {

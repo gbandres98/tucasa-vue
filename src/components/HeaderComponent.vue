@@ -28,7 +28,7 @@
       <RouterLink
         class="menu-link animated-link"
         to="/backoffice/staff"
-        v-if="!isUser"
+        v-if="isAdmin"
         >Admin</RouterLink
       >
     </div>
@@ -42,7 +42,7 @@
         Diseña tu casa
       </button></RouterLink
     >
-    <UserBarComponent :class="{ 'user-bar': true, logged: role }" />
+    <UserBarComponent :class="{ 'user-bar': true, logged: user }" />
   </div>
 </template>
 
@@ -55,6 +55,7 @@ import { computed } from "vue";
 
 const { role, user } = storeToRefs(useAuthStore());
 
+const isAdmin = computed(() => role.value === "ADMIN");
 const isUser = computed(() => !role.value || role.value === "USER");
 const isAnon = computed(() => !user.value);
 </script>

@@ -1,18 +1,33 @@
 import { storeToRefs } from "pinia";
 import { useEditorStore } from "@/stores/editor.store";
 import { computed } from "vue";
-import { getContainerPrice, getPrice } from "@/editor/util";
+import {
+  getContainerPrice,
+  getIndoorContainerPrice,
+  getPrice,
+} from "@/editor/util";
 
 export default function usePriceCalculations() {
-  const { containerData, terrain, walls, modelData, options } = storeToRefs(
-    useEditorStore()
-  );
+  const {
+    containerData,
+    indoorContainerData,
+    terrain,
+    walls,
+    modelData,
+    options,
+  } = storeToRefs(useEditorStore());
 
   const containersPrice = computed((): number => {
-    return containerData.value.reduce(
-      (sum, container) => sum + getContainerPrice(container),
-      0
-    );
+    if (containerData.value.length > 0)
+      return containerData.value.reduce(
+        (sum, container) => sum + getContainerPrice(container),
+        0
+      );
+    else
+      return indoorContainerData.value.reduce(
+        (sum, container) => sum + getIndoorContainerPrice(container),
+        0
+      );
   });
 
   const wallPrice = computed(() => 20000 + walls.value.length * 80);

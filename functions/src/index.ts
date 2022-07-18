@@ -85,3 +85,19 @@ export const createUser = functions
       throw e;
     }
   });
+
+export const deleteUser = functions
+  .region("europe-west3")
+  .https.onCall(async (data) => {
+    const req = data as StaffRequest;
+
+    try {
+      const user = await getAuth(app).getUserByEmail(req.email);
+
+      await getAuth(app).deleteUser(user.uid);
+    } catch (e: unknown) {
+      console.log(e);
+
+      throw e;
+    }
+  });

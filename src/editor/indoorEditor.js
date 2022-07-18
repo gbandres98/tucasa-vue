@@ -1,11 +1,11 @@
-import { Area, disableGridEffects, GridCoords, gridToWorld, worldToGrid, } from "@/editor/grid";
+import { Area, disableGridEffects, GridCoords, gridToWorld, hideGrid, worldToGrid, } from "@/editor/grid";
 import { ArcRotateCamera, Matrix, Mesh, MeshBuilder, Plane, PointerEventTypes, PointerInfo, Scene, Vector3, } from "@babylonjs/core";
 import { deleteContainer, MAX_FLOOR } from "@/editor/container";
 import { areasOverlap, getContainerArea, isPointInArea, lowerCornerToCenter, } from "@/editor/util";
 import "@babylonjs/core/Debug/debugLayer";
 import { switchToIndoorUI } from "@/editor/ui";
 import { floorMaterial, initializeMaterials, wallErrorMaterial, wallGhostMaterial, wallMaterial, } from "@/editor/materials";
-import { startFurniturePlacement } from "@/editor/furniture";
+import { hideFurniture, restorePlacedModels, showFurniture, startFurniturePlacement, } from "@/editor/furniture";
 import { useEditorStore } from "@/stores/editor.store";
 import { camera, scene, sizeI, sizeJ } from "@/editor/editor";
 class Wall extends Mesh {
@@ -29,7 +29,7 @@ export let activeFloor = 0;
 let lastWallGhost;
 let wallCreationActive = false;
 let wallDeletionActive = false;
-const walls = new Map();
+export const walls = new Map();
 const walls1 = [];
 const floors = [];
 const roofs = [];
@@ -49,8 +49,13 @@ export const startIndoorEditor = (design) => {
     if (design)
         enableDesignWalls(design);
     showHiddenWalls(activeFloor);
-    if (design)
+    if (design) {
+        hideGrid();
+        restorePlacedModels(design.furniture);
         startViewMode();
+        useEditorStore().indoorContainerData = containerData;
+        useEditorStore().options = design.options;
+    }
 };
 export const startWallCreation = () => {
     if (wallCreationActive) {
@@ -62,8 +67,8 @@ export const startWallCreation = () => {
     endWallDeletion();
     scene.onPointerObservable.add(wallCreationCallback);
 };
-const endWallCreation = () => {
-    scene.onPointerObservable.removeCallback(wallCreationCallback);
+export const endWallCreation = () => {
+    scene.onPointerObservable?.removeCallback(wallCreationCallback);
     useEditorStore().isAddWallActive = false;
 };
 export const startWallDeletion = () => {
@@ -90,9 +95,10 @@ const wallCreationCallback = (pointerInfo) => {
     }
     if (lastWallGhost && lastWallGhost.status == "ghost")
         setWallStatus(lastWallGhost, "disabled");
-    const wall = getClosestWallToPointer();
-    if (!wall)
+    const walls = getClosestWallToPointer();
+    if (walls.length === 0)
         return;
+    const wall = walls[0];
     if (wall.status == "enabled")
         return;
     lastWallGhost = wall;
@@ -108,29 +114,31 @@ const wallDeletionCallback = (pointerInfo) => {
     }
     if (lastWallGhost && lastWallGhost.status == "error")
         setWallStatus(lastWallGhost, "enabled");
-    const wall = getClosestWallToPointer();
-    if (!wall)
+    const walls = getClosestWallToPointer();
+    if (walls.length === 0)
         return;
+    const wall = walls[0];
     if (wall.container || wall.status == "disabled")
         return;
     lastWallGhost = wall;
     setWallStatus(wall, "error");
 };
-export const getClosestWallToPointer = (allowOutdoors = false) => {
+export const getClosestWallToPointer = (allowOutdoors = false, size = 1) => {
+    const res = [];
     const ray = scene.createPickingRay(scene.pointerX, scene.pointerY, Matrix.Identity(), null);
     const hit = scene.pickWithRay(ray);
     if (!hit)
-        return;
+        return res;
     const coords = hit.pickedPoint;
     if (!coords)
-        return;
+        return res;
     if (coords.y < 4 * activeFloor || coords.y > 4 * activeFloor + 4)
-        return;
+        return res;
     const cellOffsetX = (coords.x + 1.25) % 2.5;
     const cellOffsetZ = (coords.z + 1.25) % 2.5;
     let wallStart = worldToGrid(new Vector3(coords.x, activeFloor * 4, coords.z));
     if (!allowOutdoors && !isCellIndoors(wallStart))
-        return undefined;
+        return res;
     let wallEnd = new GridCoords(wallStart.i + 1, wallStart.j);
     if (cellOffsetX + cellOffsetZ <= 2.5) {
         if (cellOffsetX < cellOffsetZ) {
@@ -147,7 +155,28 @@ export const getClosestWallToPointer = (allowOutdoors = false) => {
             wallEnd = new GridCoords(wallStart.i + 1, wallStart.j);
         }
     }
-    return walls.get(wallID(wallStart, wallEnd, activeFloor));
+    const baseWall = walls.get(wallID(wallStart, wallEnd, activeFloor));
+    if (!baseWall)
+        return [];
+    res.push(baseWall);
+    for (let i = 1; i < size; i++) {
+        let start;
+        let end;
+        if (baseWall.vertical) {
+            start = new GridCoords(wallStart.i, wallStart.j + i);
+            end = new GridCoords(wallEnd.i, wallEnd.j + i);
+        }
+        else {
+            start = new GridCoords(wallStart.i + i, wallStart.j);
+            end = new GridCoords(wallEnd.i + i, wallEnd.j);
+        }
+        const wall = walls.get(wallID(start, end, activeFloor));
+        if (wall)
+            res.push(wall);
+        else
+            return [];
+    }
+    return res;
 };
 const generateWalls = (sizeI, sizeJ) => {
     initWallArray();
@@ -220,7 +249,7 @@ const getContainerCorners = (container) => {
     const topLeft = new GridCoords(topRight.i, bottomLeft.j);
     return [bottomLeft, bottomRight, topRight, topLeft];
 };
-const setWallStatus = (wall, status) => {
+export const setWallStatus = (wall, status) => {
     wall.status = status;
     switch (status) {
         case "enabled":
@@ -241,6 +270,12 @@ const setWallStatus = (wall, status) => {
             wall.setEnabled(true);
             wall.material = wallErrorMaterial;
             return;
+        case "furniture":
+            wall.setEnabled(false);
+            return;
+        case "temp":
+            wall.setEnabled(false);
+            return;
     }
 };
 const createWall = (start, end, floor) => {
@@ -248,8 +283,8 @@ const createWall = (start, end, floor) => {
         initializeMaterials();
     const vertical = start.j != end.j;
     const wall = MeshBuilder.CreateBox("wall", {
-        width: vertical ? 0.5 : 3,
-        depth: vertical ? 3 : 0.5,
+        width: vertical ? 0.25 : 2.75,
+        depth: vertical ? 2.75 : 0.25,
         height: 4,
         updatable: true,
     });
@@ -319,7 +354,9 @@ const enableWallsBetweenPoints = (start, end, floor) => {
         }
     }
 };
+export const wallHash = (wall) => `${wall.start.hash()}|${wall.end.hash()}`;
 const wallID = (start, end, floor) => `${start.hash()}|${end.hash()}|${floor}`;
+export const wallIDFromHash = (hash, floor) => `${hash}|${floor}`;
 const changeFloor = (floor) => {
     activeFloor = floor;
     camera.setTarget(new Vector3(camera.target.x, 5 * floor, camera.target.z));
@@ -330,6 +367,7 @@ export const increaseFloor = () => {
         changeFloor(activeFloor + 1);
     floors[activeFloor].forEach((floor) => floor.setEnabled(true));
     roofs[activeFloor - 1].forEach((roof) => roof.setEnabled(true));
+    showFurniture(activeFloor);
     showHiddenWalls(activeFloor);
 };
 export const decreaseFloor = () => {
@@ -337,6 +375,7 @@ export const decreaseFloor = () => {
         changeFloor(activeFloor - 1);
     floors[activeFloor + 1].forEach((floor) => floor.setEnabled(false));
     roofs[activeFloor].forEach((roof) => roof.setEnabled(false));
+    hideFurniture(activeFloor + 1);
     hideWalls(activeFloor + 1);
 };
 const showHiddenWalls = (floor) => {
@@ -349,7 +388,6 @@ const hideWalls = (floor) => {
         .filter((wall) => wall.status == "enabled")
         .forEach((wall) => setWallStatus(wall, "hidden"));
 };
-export const wallHash = (wall) => `${wall.start.hash()}|${wall.end.hash()}`;
 export const getWallData = () => {
     const wallData = [];
     for (const wall of walls.values()) {

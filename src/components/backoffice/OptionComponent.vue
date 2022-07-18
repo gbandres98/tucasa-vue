@@ -31,16 +31,30 @@
         @change="onValueChange($event, i)"
       />
       <!--      <font-awesome-icon class="plus-icon" icon="plus" />-->
-      <button class="button-small">Añadir</button>
+      <button
+        class="button-small"
+        @click="creating = true"
+        v-if="editing && !creating"
+      >
+        Añadir
+      </button>
+      <NewValueComponent
+        class="option-value"
+        :value="newValue"
+        @create="createValue"
+        @cancel="creating = false"
+        v-if="editing && creating"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { Option, Value } from "@/model/model";
-import { ref } from "vue";
+import { type Ref, ref } from "vue";
 import BackofficeButtons from "@/components/backoffice/BackofficeButtons.vue";
 import ValueComponent from "@/components/backoffice/ValueComponent.vue";
+import NewValueComponent from "@/components/backoffice/NewValueComponent.vue";
 
 const props = defineProps<{
   option: Option;
@@ -49,10 +63,17 @@ const emit = defineEmits<{
   (e: "change", v: Option): void;
   (e: "delete", id: string): void;
 }>();
+const newValue: Ref<Value> = ref({
+  name: "",
+  price: 0,
+  description: "",
+  selected: false,
+});
 
 const optionCopy = ref(Object.assign({}, props.option));
 const open = ref(false);
 const editing = ref(false);
+const creating = ref(false);
 
 const accept = () => {
   emit("change", optionCopy.value);
@@ -67,6 +88,11 @@ const cancel = () => {
 const onValueChange = (value: Value, index: number) => {
   optionCopy.value.values[index] = value;
   emit("change", optionCopy.value);
+};
+
+const createValue = (value: Value) => {
+  optionCopy.value.values.push(value);
+  creating.value = false;
 };
 </script>
 
@@ -109,5 +135,8 @@ input {
 
 .button-small {
   margin-left: 10px;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  padding: 5px 10px;
 }
 </style>

@@ -1,7 +1,7 @@
 import { ActionManager, ArcRotateCamera, Engine, ExecuteCodeAction, HemisphericLight, PointerDragBehavior, Scene, Tools, Vector3, } from "@babylonjs/core";
 import { createBackground } from "@/editor/background";
 import { cancelAreaSelection, clearCellMaterials, createGrid, enableAreaSelection, GridCoords, gridToWorld, highlightCells, } from "@/editor/grid";
-import { createContainerMesh, isContainerColliding, isSupported, startContainerDeletionSelection, stopContainerDeletion, validatePosition, validatePositionAll, } from "@/editor/container";
+import { correctPosition, createContainerMesh, isContainerColliding, isSupported, startContainerDeletionSelection, stopContainerDeletion, validatePosition, validatePositionAll, } from "@/editor/container";
 import { centerToLowerCorner, getContainerArea, lowerCornerToCenter, } from "@/editor/util";
 import { createUI } from "@/editor/ui";
 import { initializeMaterials } from "@/editor/materials";
@@ -14,6 +14,7 @@ export let sizeI, sizeJ;
 export let camera;
 export let scene;
 export const createScene = async (editorCanvas, view) => {
+    useEditorStore().loaded = false;
     let design;
     let terrain;
     if (view)
@@ -32,11 +33,10 @@ export const createScene = async (editorCanvas, view) => {
     canvas = editorCanvas;
     engine = new Engine(canvas, true, { stencil: true });
     scene = new Scene(engine);
-    // scene.debugLayer.show();
+    createBackground(scene);
     new HemisphericLight("ambientLight", new Vector3(0.2, 1, -0.2), scene);
     initializeMaterials();
     createCamera();
-    createBackground(scene);
     createGrid(scene, sizeI, sizeJ);
     createUI();
     engine.runRenderLoop(() => {
@@ -119,6 +119,7 @@ const addContainerDragBehavior = (container) => {
             j = sizeJ - container.sizeJ + 1;
         const fixedLowerCorner = new Vector3(i * 2.5, newLowerCorner.y, j * 2.5);
         container.mesh.position = lowerCornerToCenter(fixedLowerCorner, container.sizeI, container.sizeJ);
+        correctPosition(container);
         highlightCells(getContainerArea(container));
         if (isContainerColliding(container)) {
             container.mesh.material = container.wallErrorMaterial;

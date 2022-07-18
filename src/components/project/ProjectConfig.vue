@@ -43,7 +43,7 @@ h2 {
 }
 
 .details.open {
-  max-height: 200px;
+  max-height: 500px;
 }
 
 .details div {
@@ -62,10 +62,11 @@ svg.open {
 .option {
   display: flex;
   gap: 20px;
+  min-height: 70px;
 }
 
 .col-1 {
-  flex: 0 0 10%;
+  flex: 0 0 20%;
   font-weight: 800;
 }
 
@@ -74,6 +75,7 @@ svg.open {
 }
 
 .col-3 {
+  flex: 0 0 55%;
   overflow-y: scroll;
   max-height: 70px;
   font-size: 0.9rem;

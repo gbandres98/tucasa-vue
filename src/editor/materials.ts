@@ -1,4 +1,9 @@
-import { Color3, StandardMaterial, Texture } from "@babylonjs/core";
+import {
+  Color3,
+  PBRMaterial,
+  StandardMaterial,
+  Texture,
+} from "@babylonjs/core";
 import wallTexture from "@/assets/editor/wall.jpg";
 import type { ScaledTexture } from "@/editor/util";
 import floorTexture from "@/assets/editor/floor.jpg";
@@ -10,6 +15,7 @@ export let cellMaterial: StandardMaterial;
 export let cellHoverMaterial: StandardMaterial;
 export let cellHighlightMaterial: StandardMaterial;
 export let floorMaterial: StandardMaterial;
+export let glassMaterial: PBRMaterial;
 
 export const initializeMaterials = () => {
   wallMaterial = new StandardMaterial("wallMaterial");
@@ -46,4 +52,11 @@ export const initializeMaterials = () => {
   floorMaterial.diffuseTexture = new Texture(floorTexture);
   (floorMaterial.diffuseTexture as ScaledTexture).uScale = 1;
   (floorMaterial.diffuseTexture as ScaledTexture).vScale = 1;
+
+  glassMaterial = new PBRMaterial("glassMtl");
+  glassMaterial.metallic = 0;
+  glassMaterial.transparencyMode = PBRMaterial.MATERIAL_ALPHABLEND;
+  glassMaterial.alpha = 0.4;
+  glassMaterial.roughness = 0.5;
+  glassMaterial.subSurface.isRefractionEnabled = true;
 };

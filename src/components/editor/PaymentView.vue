@@ -80,7 +80,7 @@ import usePriceCalculations from "@/components/editor/usePriceCalculations";
 import FormError from "@/components/FormError.vue";
 import { createProject } from "@/client/project";
 
-const monthOptions = [1, 6, 12, 24, 36, 48, 60];
+const monthOptions = [36, 48, 60, 72, 84, 96, 118];
 
 const name = ref("");
 const surname = ref("");
@@ -88,7 +88,7 @@ const phone = ref("");
 const email = ref("");
 const password = ref("");
 const password2 = ref("");
-const payments = ref(24);
+const payments = ref(48);
 const passwordError = ref("");
 
 const { total } = usePriceCalculations();

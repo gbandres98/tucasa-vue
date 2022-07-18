@@ -289,3 +289,9 @@ const updateGridHeight = () => {
     cell.position.y = useEditorStore().activeFloor * 4;
   });
 };
+
+export const hideGrid = () => {
+  grid.cells().forEach((cell) => {
+    cell.setEnabled(false);
+  });
+};

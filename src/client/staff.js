@@ -25,6 +25,10 @@ export const saveStaff = async (staff) => {
     return setDoc(doc(firestore, "staff", staff.email), staff);
 };
 export const deleteStaff = async (email) => {
+    const deleteUser = httpsCallable(functions, "deleteUser");
+    deleteUser({
+        email: email,
+    });
     return deleteDoc(doc(firestore, "staff", email));
 };
 //# sourceMappingURL=staff.js.map

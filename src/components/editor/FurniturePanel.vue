@@ -7,6 +7,7 @@
       @click="pickFurniture(furniture)"
     >
       <img :src="furniture.preview" alt="furniture preview" />
+      <span class="name">{{ furniture.name }}</span>
     </div>
   </div>
 </template>
@@ -15,15 +16,25 @@
 import { onMounted, ref } from "vue";
 import { getModels, startFurniturePlacement } from "@/editor/furniture";
 import type { Model } from "@/editor/furniture";
+import { endWallCreation } from "@/editor/indoorEditor";
+
+const props = defineProps<{
+  type: "door" | "window";
+}>();
+
+const emit = defineEmits<{
+  (e: "picked"): void;
+}>();
 
 const furnitures = ref(new Array<Model>());
 
 onMounted(async () => {
-  furnitures.value = await getModels("door");
+  furnitures.value = await getModels(props.type === "window");
 });
 
 const pickFurniture = (model: Model) => {
-  console.log(model);
+  emit("picked");
+  endWallCreation();
   startFurniturePlacement(model);
 };
 </script>
@@ -31,20 +42,38 @@ const pickFurniture = (model: Model) => {
 <style scoped>
 .furniture-panel {
   background-color: white;
-  border: 1px solid black;
+  border: 3px solid var(--primary);
   border-radius: 2px;
   position: absolute;
   top: 110%;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 10px;
   z-index: 100;
 }
 
 .furniture {
-  width: 50px;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
 }
 
 .furniture img {
-  max-width: 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.furniture:hover {
+  box-shadow: inset 0px 0px 4px 0px rgba(158, 158, 158, 1);
+}
+
+.furniture:hover .name {
+  font-weight: 800;
+}
+
+.name {
+  font-size: 0.6rem;
 }
 </style>
