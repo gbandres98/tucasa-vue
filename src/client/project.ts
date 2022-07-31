@@ -1,8 +1,10 @@
 import type {
   ClientInfo,
+  HomeStatus,
   PaymentInfo,
   Project,
   ProjectDTO,
+  Staff,
 } from "@/model/model";
 import { generateDesign } from "@/editor/util";
 import { DateTime } from "luxon";
@@ -115,5 +117,21 @@ export const updateProjectModified = (projectId: string) => {
 
   updateDoc(docRef, {
     lastModified: DateTime.now().toMillis(),
+  });
+};
+
+export const updateProjectAssigned = (projectId: string, assigned: Staff) => {
+  const docRef = doc(firestore, "projects", projectId);
+
+  updateDoc(docRef, {
+    assigned: assigned,
+  });
+};
+
+export const updateProjectStatus = (projectId: string, status: HomeStatus) => {
+  const docRef = doc(firestore, "projects", projectId);
+
+  updateDoc(docRef, {
+    status: status,
   });
 };

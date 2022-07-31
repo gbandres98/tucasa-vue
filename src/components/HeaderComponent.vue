@@ -27,18 +27,19 @@
       >
       <RouterLink
         class="menu-link animated-link"
+        to="/backoffice/modelos"
+        v-if="!isUser"
+        >Modelos</RouterLink
+      >
+      <RouterLink
+        class="menu-link animated-link"
         to="/backoffice/staff"
         v-if="isAdmin"
-        >Admin</RouterLink
+        >Staff</RouterLink
       >
     </div>
     <RouterLink to="/editor" custom v-slot="{ navigate }"
-      ><button
-        class="button-primary"
-        @click="navigate"
-        @keypress.enter="navigate"
-        v-if="isAnon"
-      >
+      ><button class="button-primary" @click="navigate" v-if="isAnon">
         Diseña tu casa
       </button></RouterLink
     >

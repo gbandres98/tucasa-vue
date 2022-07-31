@@ -25,7 +25,7 @@ defineEmits(["close"]);
 <style scoped>
 .project-modal ::v-deep(.modal) {
   max-width: 80%;
-  max-height: 90%;
+  height: 80%;
   overflow-y: scroll;
   background-color: whitesmoke;
 }

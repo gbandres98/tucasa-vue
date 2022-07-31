@@ -13,7 +13,11 @@ export const getModels = async (window) => {
     const modelsCollection = collection(firestore, "models");
     const snap = await getDocs(modelsCollection);
     return snap.docs
-        .map((doc) => doc.data())
+        .map((doc) => {
+        const model = doc.data();
+        model.id = doc.id;
+        return model;
+    })
         .filter((model) => model.window === window);
 };
 export const startFurniturePlacement = async (model) => {

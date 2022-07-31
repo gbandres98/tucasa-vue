@@ -1,6 +1,7 @@
 import { Color3, PBRMaterial, StandardMaterial, Texture, } from "@babylonjs/core";
 import wallTexture from "@/assets/editor/wall.jpg";
 import floorTexture from "@/assets/editor/floor.jpg";
+let initialized = false;
 export let wallMaterial;
 export let wallGhostMaterial;
 export let wallErrorMaterial;
@@ -44,5 +45,6 @@ export const initializeMaterials = () => {
     glassMaterial.alpha = 0.4;
     glassMaterial.roughness = 0.5;
     glassMaterial.subSurface.isRefractionEnabled = true;
+    initialized = true;
 };
 //# sourceMappingURL=materials.js.map

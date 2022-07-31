@@ -13,7 +13,13 @@
       <ContactComponent :client="project.client" />
     </div>
     <div class="col-2">
-      <span>Encargado: <StaffComponent :staff="project.assigned" /></span>
+      <span
+        >Encargado:
+        <StaffComponent
+          :staff="project.assigned"
+          @click="assignedSelectOpen = true"
+      /></span>
+      <StaffSelect @select="updateAssigned" :open="assignedSelectOpen" />
       <ProjectState class="project-status" :status="project.status" />
       <ChatComponent :project-id="projectId.toString()" class="chat" />
     </div>
@@ -23,24 +29,43 @@
 <script setup lang="ts">
 import EditorComponent from "@/components/editor/EditorComponent.vue";
 import StaffComponent from "@/components/StaffComponent.vue";
-import type { Project } from "@/model/model";
+import type { Project, Staff } from "@/model/model";
 import { onBeforeMount, ref, type Ref } from "vue";
-import { getProject } from "@/client/project";
+import {
+  getProject,
+  updateProjectAssigned,
+  updateProjectStatus,
+} from "@/client/project";
 import ProjectState from "@/components/project/ProjectState.vue";
 import ChatComponent from "@/components/project/ChatComponent.vue";
 import ContactComponent from "@/components/project/ContactComponent.vue";
 import ProjectConfig from "@/components/project/ProjectConfig.vue";
 import PaymentConfig from "@/components/project/PaymentConfig.vue";
+import StaffSelect from "@/components/backoffice/StaffSelect.vue";
 
 const props = defineProps<{
   projectId: number;
 }>();
 
 const project: Ref<Project | undefined> = ref(undefined);
+const assignedSelectOpen = ref(false);
 
 onBeforeMount(
   async () => (project.value = await getProject(props.projectId.toString()))
 );
+
+const updateAssigned = (staff: Staff) => {
+  assignedSelectOpen.value = false;
+  if (!project.value) return;
+
+  project.value.assigned = staff;
+  updateProjectAssigned(project.value.id.toString(), staff);
+
+  if (project.value.status === "NEW") {
+    project.value.status = "ASSIGNED";
+    updateProjectStatus(project.value.id.toString(), "ASSIGNED");
+  }
+};
 </script>
 
 <style scoped>
@@ -72,5 +97,14 @@ onBeforeMount(
 
 .chat {
   margin: 10px 0;
+}
+
+.col-2 {
+  position: relative;
+}
+
+.staff-select {
+  left: 70px;
+  top: 50px;
 }
 </style>

@@ -8,6 +8,7 @@
         group="cards"
         itemKey="id"
         ghost-class="ghost"
+        @change="onMove($event, column.status)"
       >
         <template #item="{ element }">
           <ProjectCard :project="element" />
@@ -15,14 +16,25 @@
       </Draggable>
     </div>
   </div>
+  <StaffModal
+    :open="staffModalOpen"
+    @staffModalClose="onStaffModalClose"
+    @select="onStaffUpdate"
+  />
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
-import type { HomeStatus, Project } from "@/model/model";
+import { onMounted, onUnmounted, type Ref, ref } from "vue";
+import type { HomeStatus, Project, Staff } from "@/model/model";
 import Draggable from "vuedraggable";
-import { getProjects } from "@/client/project";
+import {
+  getProjects,
+  updateProjectAssigned,
+  updateProjectModified,
+  updateProjectStatus,
+} from "@/client/project";
 import ProjectCard from "@/components/backoffice/ProjectCard.vue";
+import StaffModal from "@/components/modals/StaffModal.vue";
 
 type Column = {
   status: HomeStatus;
@@ -52,9 +64,17 @@ const columns = ref([
     projects: [],
   },
 ] as Column[]);
+const timer: Ref = ref(undefined);
+const staffModalOpen = ref(false);
+const lastMoved: Ref<undefined | Project> = ref(undefined);
 
-onMounted(async () => {
+const loadProjects = async () => {
   const projects = await getProjects();
+
+  columns.value[0].projects = [];
+  columns.value[1].projects = [];
+  columns.value[2].projects = [];
+  columns.value[3].projects = [];
 
   projects.forEach((project) => {
     switch (project.status) {
@@ -74,7 +94,48 @@ onMounted(async () => {
         return;
     }
   });
-});
+};
+
+onMounted(loadProjects);
+
+onMounted(() => (timer.value = setInterval(loadProjects, 10000)));
+
+onUnmounted(() => clearInterval(timer.value));
+
+const onMove = (e: any, status: HomeStatus) => {
+  if (!e.added) return;
+
+  const project = e.added.element as Project;
+
+  lastMoved.value = project;
+
+  if (status === "ASSIGNED" && !project.assigned) {
+    staffModalOpen.value = true;
+    return;
+  }
+
+  project.status = status;
+  updateProjectStatus(project.id.toString(), status);
+  updateProjectModified(project.id.toString());
+};
+
+const onStaffUpdate = (staff: Staff) => {
+  if (!lastMoved.value) return;
+
+  staffModalOpen.value = false;
+
+  const project = lastMoved.value;
+
+  project.assigned = staff;
+  updateProjectAssigned(project.id.toString(), staff);
+  updateProjectStatus(project.id.toString(), "ASSIGNED");
+  updateProjectModified(project.id.toString());
+};
+
+const onStaffModalClose = () => {
+  staffModalOpen.value = false;
+  loadProjects();
+};
 </script>
 
 <style scoped>

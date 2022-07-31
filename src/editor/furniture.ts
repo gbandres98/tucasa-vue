@@ -28,6 +28,7 @@ import { useEditorStore } from "@/stores/editor.store";
 import { glassMaterial, wallMaterial } from "@/editor/materials";
 
 export type Model = {
+  id: string;
   name: string;
   file: string;
   preview: string;
@@ -57,7 +58,11 @@ export const getModels = async (window: boolean) => {
   const snap = await getDocs(modelsCollection);
 
   return snap.docs
-    .map((doc) => doc.data() as Model)
+    .map((doc) => {
+      const model = doc.data() as Model;
+      model.id = doc.id;
+      return model;
+    })
     .filter((model) => model.window === window);
 };
 

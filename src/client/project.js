@@ -79,4 +79,16 @@ export const updateProjectModified = (projectId) => {
         lastModified: DateTime.now().toMillis(),
     });
 };
+export const updateProjectAssigned = (projectId, assigned) => {
+    const docRef = doc(firestore, "projects", projectId);
+    updateDoc(docRef, {
+        assigned: assigned,
+    });
+};
+export const updateProjectStatus = (projectId, status) => {
+    const docRef = doc(firestore, "projects", projectId);
+    updateDoc(docRef, {
+        status: status,
+    });
+};
 //# sourceMappingURL=project.js.map

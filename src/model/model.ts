@@ -120,3 +120,8 @@ export type Message = {
   text: string;
   staff: boolean;
 };
+
+export type Faq = {
+  title: string;
+  description: string;
+};

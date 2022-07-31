@@ -8,6 +8,7 @@ import wallTexture from "@/assets/editor/wall.jpg";
 import type { ScaledTexture } from "@/editor/util";
 import floorTexture from "@/assets/editor/floor.jpg";
 
+let initialized = false;
 export let wallMaterial: StandardMaterial;
 export let wallGhostMaterial: StandardMaterial;
 export let wallErrorMaterial: StandardMaterial;
@@ -59,4 +60,6 @@ export const initializeMaterials = () => {
   glassMaterial.alpha = 0.4;
   glassMaterial.roughness = 0.5;
   glassMaterial.subSurface.isRefractionEnabled = true;
+
+  initialized = true;
 };

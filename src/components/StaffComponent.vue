@@ -12,6 +12,7 @@ import type { Staff } from "@/model/model";
 import ProfilePic from "@/components/ProfilePic.vue";
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "@/stores/auth.store";
+import StaffSelect from "@/components/backoffice/StaffSelect.vue";
 
 defineProps<{
   staff?: Staff;
@@ -35,6 +36,7 @@ const isStaff = computed(
   padding: 5px 10px;
   border-radius: 5px;
   border: 2px solid var(--primary);
+  position: relative;
 }
 
 .clickable {

@@ -7,10 +7,10 @@ import { computed } from "vue";
 import { getAvatarUrl } from "@/client/avatar";
 
 const props = defineProps<{
-  email: string;
+  email?: string;
 }>();
 
-const url = computed(() => getAvatarUrl(props.email));
+const url = computed(() => getAvatarUrl(props.email ? props.email : ""));
 </script>
 
 <style scoped>
