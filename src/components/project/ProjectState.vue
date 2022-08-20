@@ -37,7 +37,7 @@ const statusName = computed(() => {
 const statusUserText = computed(() => {
   switch (props.status) {
     case "NEW":
-      return "El proyecto ha sido creado. Pronto se asignará un encargado para que lo revise y contactará contigo para definir los detalles del proyecto.";
+      return "El proyecto ha sido creado. Ahora puedes revisar el presupuesto y modificar tu diseño hasta que sea justo como tú quieres.";
     case "ASSIGNED":
       return "Se ha asignado un encargado al proyecto que contactará contigo para ultimar los detalles de la obra.";
     case "IN_PROGRESS":

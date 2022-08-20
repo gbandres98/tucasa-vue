@@ -5,6 +5,14 @@
         >Último cambio
         {{ project.lastModified.toRelative({ locale: "ES" }) }}</span
       >
+      <div class="versions" v-if="!isStaff">
+        <v-select
+          v-model="version"
+          :options="versions"
+          :clearable="false"
+          :filterable="false"
+        />
+      </div>
       <div class="editor">
         <EditorComponent :view="projectId.toString()" />
       </div>
@@ -22,6 +30,12 @@
       <StaffSelect @select="updateAssigned" :open="assignedSelectOpen" />
       <ProjectState class="project-status" :status="project.status" />
       <ChatComponent :project-id="projectId.toString()" class="chat" />
+      <div class="client-buttons" v-if="!isStaff && project.status === 'NEW'">
+        <div class="input-group">
+          <button class="button-primary confirm">Confirmar proyecto</button>
+          <button class="button-primary edit">Editar diseño</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -30,7 +44,7 @@
 import EditorComponent from "@/components/editor/EditorComponent.vue";
 import StaffComponent from "@/components/StaffComponent.vue";
 import type { Project, Staff } from "@/model/model";
-import { onBeforeMount, ref, type Ref } from "vue";
+import { computed, onBeforeMount, ref, type Ref } from "vue";
 import {
   getProject,
   updateProjectAssigned,
@@ -42,6 +56,7 @@ import ContactComponent from "@/components/project/ContactComponent.vue";
 import ProjectConfig from "@/components/project/ProjectConfig.vue";
 import PaymentConfig from "@/components/project/PaymentConfig.vue";
 import StaffSelect from "@/components/backoffice/StaffSelect.vue";
+import { useAuthStore } from "@/stores/auth.store";
 
 const props = defineProps<{
   projectId: number;
@@ -49,6 +64,16 @@ const props = defineProps<{
 
 const project: Ref<Project | undefined> = ref(undefined);
 const assignedSelectOpen = ref(false);
+const version = ref("Versión 4: 27 de Junio de 2022 - 13:05");
+
+const versions = ref([
+  "Versión 1: 27 de Junio de 2022 - 11:44",
+  "Versión 2: 26 de Junio de 2022 - 20:37",
+  "Versión 3: 26 de Junio de 2022 - 19:21",
+  "Versión 4: 27 de Junio de 2022 - 13:05",
+]);
+
+const isStaff = computed(() => useAuthStore().role != undefined);
 
 onBeforeMount(
   async () => (project.value = await getProject(props.projectId.toString()))
@@ -106,5 +131,13 @@ const updateAssigned = (staff: Staff) => {
 .staff-select {
   left: 70px;
   top: 50px;
+}
+
+.client-buttons {
+  margin-top: 30px;
+}
+
+.button-primary.edit {
+  background-color: var(--accent-1);
 }
 </style>
